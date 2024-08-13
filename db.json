@@ -1,0 +1,15 @@
+{
+  "id_user": "ada3db85-57d3-11ef-a749-000e1e909940",
+  "first_name": "Alice",
+  "last_name": "Wonderland",
+  "middle_name": null,
+  "email": "panh9151@gmail.com",
+  "avatar_path": "avatar_alice.png",
+  "phone": "1234567890",
+  "gender": "female",
+  "age": 25,
+  "id_google": "alice_google_id",
+  "is_banned": 0,
+  "token_reset": null,
+  "expired_token_reset": null
+}
