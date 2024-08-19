@@ -21,11 +21,11 @@ export const getCurrentUser = async (
   isRequired: boolean = true
 ) => {
   const userId = req.headers.get("userId") || "";
-  if (!userId) throwCustomError("Auth middleware not handle!", 500);
 
   const user = getUserbyId(userId);
 
   if (isRequired) {
+    if (!userId) throwCustomError("Auth middleware not handle!", 500);
     if (typeof user === "string") throwCustomError("Authenticate user failed");
     return user;
   } else {

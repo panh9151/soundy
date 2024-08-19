@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerErrorMsg, throwCustomError } from "./utils/Error";
 import { jwtVerify, JWTVerifyResult } from "jose";
 import Env from "./utils/Env";
-import { objectResponse } from "./utils/Response";
+import { getQueryParams, objectResponse } from "./utils/Response";
 
 const secretToken = Env.ACCESS_TOKEN_SECRET;
 
@@ -30,10 +30,11 @@ export async function middleware(request: Request) {
       throwCustomError("Failed to verify token", 500);
     }
     const userId: string = (decoded?.payload.id as string) || "";
-
-    // const userId = await getUserbyId(userId);
-
     response.headers.set("userId", userId);
+
+    // GetParams
+    // response.headers.set("params", JSON.stringify(getQueryParams(request)));
+
     return response;
   } catch (error) {
     return getServerErrorMsg(error);
@@ -42,5 +43,6 @@ export async function middleware(request: Request) {
 
 // Cấu hình matcher để áp dụng middleware chỉ cho các route cụ thể
 export const config = {
-  matcher: ["/api/profile", "/api/change-password", "/api/update-infor"],
+  matcher: ["/api/:path*"],
+  // matcher: ["/api/profile", "/api/change-password", "/api/update-infor"],
 };

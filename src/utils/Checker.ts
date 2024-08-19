@@ -124,6 +124,15 @@ class Checker {
     }
     throwCustomError("Check included failed", 400);
   }
+
+  static convertJson(arr: Array<any>, ...fields: any) {
+    arr.forEach((item) => {
+      fields.forEach((field: any) => {
+        item[field] = JSON.parse(item[field]);
+      });
+      return arr;
+    });
+  }
 }
 
 export default Checker;
