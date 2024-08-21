@@ -59,8 +59,6 @@ export const GET = async (request: Request) => {
             Type t ON m.id_type = t.id_type and t.is_show = "1"
         LEFT JOIN 
             Author a ON m.id_author = a.id_author
-        WHERE 
-            m.is_show = '1';
         `,
         []
       );

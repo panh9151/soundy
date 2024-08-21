@@ -68,7 +68,7 @@ export const GET = async (request: Request, context: any) => {
           JOIN 
               Author a ON m.id_author = a.id_author
           WHERE 
-              m.is_show = '1' and m.id_music = ?;
+              m.id_music = ?;
         `,
         [id]
       );
