@@ -4,9 +4,11 @@ import { getCurrentUser } from "@/utils/Get";
 import { getServerErrorMsg, throwCustomError } from "@/utils/Error";
 import { objectResponse } from "@/utils/Response";
 
-export const GET = async (request: Request) => {
+export const GET = async (request: Request, context: any) => {
   try {
     const currentUser = await getCurrentUser(request, false);
+    const { params } = context;
+    const { id } = params;
 
     if (currentUser?.role === "admin") {
       const [scenarioList]: Array<any> = await connection.query(
@@ -63,13 +65,19 @@ export const GET = async (request: Request) => {
             Type t ON t.id_type = sm.id_type
         LEFT JOIN 
             Type tt ON tt.id_type = ss.id_type
+        WHERE 
+            s.id_scenario = ?
         GROUP BY 
             s.id_scenario;    
         `,
-        []
+        [id]
       );
+
+      if (scenarioList.length !== 1)
+        throwCustomError("ID scenario not found", 400);
+
       Checker.convertJson(scenarioList, "sounds", "musics");
-      return objectResponse([...scenarioList]);
+      return objectResponse(scenarioList[0]);
     } else if (currentUser?.role === "membership") {
       const [scenarioList]: Array<any> = await connection.query(
         `SELECT 
@@ -134,13 +142,18 @@ export const GET = async (request: Request) => {
             Type tt ON tt.id_type = ss.id_type
         WHERE 
             s.is_show = '1' 
+            AND s.id_scenario = ?
         GROUP BY 
             s.id_scenario;  
         `,
-        []
+        [id]
       );
+
+      if (scenarioList.length !== 1)
+        throwCustomError("ID scenario not found", 400);
+
       Checker.convertJson(scenarioList, "sounds", "musics");
-      return objectResponse([...scenarioList]);
+      return objectResponse(scenarioList[0]);
     } else {
       const [scenarioList]: Array<any> = await connection.query(
         `SELECT 
@@ -204,70 +217,120 @@ export const GET = async (request: Request) => {
         LEFT JOIN 
             Type tt ON tt.id_type = ss.id_type
         WHERE  
-            s.is_show = '1' 
+            s.id_scenario = ?
+            AND s.is_show = '1' 
             AND s.set_free = '1'
             AND NOW() BETWEEN s.free_time_start AND s.free_time_end
         GROUP BY 
             s.id_scenario;`,
-        []
+        [id]
       );
+
+      if (scenarioList.length !== 1)
+        throwCustomError("ID scenario not found", 400);
+
       Checker.convertJson(scenarioList as Array<any>, "sounds", "musics");
-      return objectResponse([...scenarioList]);
+      return objectResponse(scenarioList[0]);
     }
   } catch (error) {
     return getServerErrorMsg(error);
   }
 };
 
-export const POST = async (request: Request) => {
+export const PATCH = async (request: Request, context: any) => {
   try {
     const body = await request.json();
     const {
       name,
       img_path,
-      set_free = "1",
+      set_free,
       free_time_start,
       free_time_end,
-      type = "day",
-      is_default = "0",
-      is_show = "1",
+      type,
+      is_default,
+      is_show,
     } = body;
+    const { params } = context;
+    const { id } = params; // ID của kịch bản cần cập nhật
 
-    // Check required
-    Checker.checkRequired(name, img_path);
+    // Check required fields
+    Checker.checkRequired(id);
 
     // Validation
-    Checker.checkString(name);
-    Checker.checkString(img_path);
-    Checker.checkString(set_free);
-    Checker.checkString(free_time_start);
-    Checker.checkString(free_time_end);
-    Checker.checkIncluded(type, ["day", "night", "rain"]);
-    Checker.checkIncluded(is_default, ["0", "1"]);
-    Checker.checkIncluded(is_show, ["0", "1"]);
+    if (name !== undefined) Checker.checkString(name);
+    if (img_path !== undefined) Checker.checkString(img_path);
+    if (set_free !== undefined) Checker.checkString(set_free);
+    if (free_time_start !== undefined) Checker.checkString(free_time_start);
+    if (free_time_end !== undefined) Checker.checkString(free_time_end);
+    if (type !== undefined)
+      Checker.checkIncluded(type, ["day", "night", "rain"]);
+    if (is_default !== undefined) Checker.checkIncluded(is_default, ["0", "1"]);
+    if (is_show !== undefined) Checker.checkIncluded(is_show, ["0", "1"]);
 
     // Check permission
     const currentUser = await getCurrentUser(request);
     if (currentUser?.role !== "admin")
       throwCustomError("Not enough permission", 403);
 
-    // Update DB
-    const [result]: Array<any> = await connection.query(
-      `CALL add_scenario(?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        name,
-        img_path,
-        set_free,
-        free_time_start,
-        free_time_end,
-        type,
-        is_default,
-        is_show,
-      ]
+    // Check if the ID exists
+    const [rows]: Array<any> = await connection.query(
+      "SELECT id_scenario FROM Scenario WHERE id_scenario = ?",
+      [id]
     );
+    if (!rows || rows.length === 0) throwCustomError("ID not found", 404);
 
-    const addedData = result[0][0];
-    return objectResponse({ newID: addedData.id });
+    // Prepare data for update
+    const updateData: any = {};
+    if (name !== undefined) updateData.name = name;
+    if (img_path !== undefined) updateData.img_path = img_path;
+    if (set_free !== undefined) updateData.set_free = set_free;
+    if (free_time_start !== undefined)
+      updateData.free_time_start = free_time_start;
+    if (free_time_end !== undefined) updateData.free_time_end = free_time_end;
+    if (type !== undefined) updateData.type = type;
+    if (is_default !== undefined) updateData.is_default = is_default;
+    if (is_show !== undefined) updateData.is_show = is_show;
+
+    if (Object.keys(updateData).length === 0) {
+      throwCustomError("No fields to update", 400);
+    }
+
+    // Build SQL query for update
+    const updateFields = Object.keys(updateData)
+      .map((field) => `${field} = ?`)
+      .join(", ");
+    const query = `UPDATE Scenario SET ${updateFields} WHERE id_scenario = ?`;
+
+    // Execute the update query
+    await connection.query(query, [...Object.values(updateData), id]);
+
+    return objectResponse({ ...updateData, id });
+  } catch (error) {
+    return getServerErrorMsg(error);
+  }
+};
+
+export const DELETE = async (request: Request, context: any) => {
+  try {
+    const currentUser = await getCurrentUser(request);
+    const { params } = context;
+    const { id } = params;
+
+    if (currentUser?.role === "admin") {
+      const [rows]: Array<any> = await connection.query(
+        "SELECT id_scenario FROM Scenario WHERE id_scenario = ?",
+        [id]
+      );
+      if (!rows || rows.length === 0) throwCustomError("ID not found", 400);
+
+      await connection.query("DELETE FROM Scenario WHERE id_scenario = ?", [
+        id,
+      ]);
+
+      return objectResponse({ deletedID: id });
+    } else {
+      throwCustomError("Not enough permission", 403);
+    }
   } catch (error) {
     return getServerErrorMsg(error);
   }

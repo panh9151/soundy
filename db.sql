@@ -60,7 +60,6 @@ CREATE TABLE Music (
   music_path VARCHAR(255) not null,
   last_updated DATETIME DEFAULT now(),
   created_at DATETIME DEFAULT now(),
-  is_show ENUM("0", "1") DEFAULT "1",
   FOREIGN KEY (id_author) REFERENCES Author(id_author) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (id_type) REFERENCES Type(id_type) ON DELETE SET NULL ON UPDATE CASCADE
 );
@@ -68,8 +67,8 @@ CREATE TABLE Music (
 -- Tạo bảng Scenario
 CREATE TABLE Scenario (
   id_scenario VARCHAR(40) PRIMARY KEY DEFAULT uuid(),
-  name VARCHAR(255),
-  img_path VARCHAR(255),
+  name VARCHAR(255) not null,
+  img_path VARCHAR(255) not null,
   set_free ENUM("0", "1") DEFAULT "1",
   free_time_start DATETIME,
   free_time_end DATETIME,
@@ -148,6 +147,7 @@ CREATE TABLE ScenarioMusicDetail (
   id_scenario VARCHAR(40) NOT NULL,
   id_music VARCHAR(40) NOT NULL,
   is_default ENUM("0", "1") DEFAULT "0",
+  is_show ENUM("0", "1") DEFAULT "1",
   FOREIGN KEY (id_scenario) REFERENCES Scenario(id_scenario) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (id_music) REFERENCES Music(id_music) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -215,501 +215,66 @@ END $$
 DELIMITER ;
 
 -- INSERT
--- 1. Chèn dữ liệu vào bảng Author
-INSERT INTO
-  Author (id_author, name, thumbnail)
-VALUES
-  (uuid(), 'John Doe', 'thumbnail_john_doe.png'),
-  (uuid(), 'Jane Smith', 'thumbnail_jane_smith.png');
+-- Dữ liệu cho bảng Author
+INSERT INTO Author (id_author, name, thumbnail) VALUES
+('a1', 'John Williams', 'https://example.com/thumbnails/john_williams.jpg'),
+('a2', 'Hans Zimmer', 'https://example.com/thumbnails/hans_zimmer.jpg'),
+('a3', 'Ennio Morricone', 'https://example.com/thumbnails/ennio_morricone.jpg');
 
--- 2. Chèn dữ liệu vào bảng Type
-INSERT INTO
-  Type (id_type, label, thumbnail, is_show)
-VALUES
-  (
-    uuid(),
-    'Music Type 1',
-    'thumbnail_music_type_1.png',
-    true
-  ),
-  (
-    uuid(),
-    'Music Type 2',
-    'thumbnail_music_type_2.png',
-    false
-  );
+-- Dữ liệu cho bảng Type
+INSERT INTO Type (id_type, label, thumbnail, is_show) VALUES
+('t1', 'Classical', 'https://example.com/thumbnails/classical.jpg', '1'),
+('t2', 'Ambient', 'https://example.com/thumbnails/ambient.jpg', '1'),
+('t3', 'Jazz', 'https://example.com/thumbnails/jazz.jpg', '1');
 
--- 3. Chèn dữ liệu vào bảng User
-INSERT INTO
-  User (
-    id_user,
-    first_name,
-    last_name,
-    middle_name,
-    role,
-    email,
-    password,
-    avatar_path,
-    phone,
-    gender,
-    age,
-    id_google,
-    is_banned,
-    token_reset,
-    expired_token_reset
-  )
-VALUES
-  (
-    uuid(),
-    'Alice',
-    'Wonderland',
-    NULL,
-    "user",
-    "panh9151@gmail.com",
-    "$2a$12$FuDE3q6FuHB1wwrN9OACCu1rS0R67uMVDkuYrB5iqhjwesgt8YhK2",
-    'avatar_alice.png',
-    '1234567890',
-    'female',
-    25,
-    'alice_google_id',
-    false,
-    NULL,
-    NULL
-  ),
-  (
-    uuid(),
-    'Bob',
-    'Builder',
-    'The',
-    "admin",
-    "anhpt2611@gmail.com",
-    "$2a$12$FuDE3q6FuHB1wwrN9OACCu1rS0R67uMVDkuYrB5iqhjwesgt8YhK2",
-    'avatar_bob.png',
-    '0987654321',
-    'male',
-    30,
-    'bob_google_id',
-    false,
-    NULL,
-    NULL
-  );
+-- Dữ liệu cho bảng User
+INSERT INTO User (id_user, first_name, last_name, middle_name, role, email, password, avatar_path, phone, gender, age, id_google, is_banned, last_updated, created_date, token_reset, expired_token_reset) VALUES
+('u1', 'Alice', 'Smith', 'Marie', 'user', 'anhpt2611@gmail.com', '$2a$12$FuDE3q6FuHB1wwrN9OACCu1rS0R67uMVDkuYrB5iqhjwesgt8YhK2', 'https://example.com/avatars/alice.jpg', '1234567890', 'female', 30, 'google_id_1', '0', NOW(), NOW(), NULL, NULL),
+('u2', 'Bob', 'Johnson', NULL, 'admin', 'panh9151@gmail.com', '$2a$12$FuDE3q6FuHB1wwrN9OACCu1rS0R67uMVDkuYrB5iqhjwesgt8YhK2', 'https://example.com/avatars/bob.jpg', '0987654321', 'male', 45, 'google_id_2', '0', NOW(), NOW(), NULL, NULL);
 
--- 4. Chèn dữ liệu vào bảng Music
--- Lưu ý: id_author và id_type phải khớp với các giá trị đã được chèn vào bảng Author và Type trước đó
-INSERT INTO
-  Music (
-    id_music,
-    id_author,
-    id_type,
-    title,
-    music_path,
-    last_updated,
-    created_at,
-    is_show
-  )
-VALUES
-  (
-    "123",
-    (
-      SELECT
-        id_author
-      FROM
-        Author
-      WHERE
-        name = 'John Doe'
-    ),
-    (
-      SELECT
-        id_type
-      FROM
-        Type
-      WHERE
-        label = 'Music Type 1'
-    ),
-    'Sample Music 1',
-    'path_to_music_1.mp3',
-    now(),
-    now(),
-    true
-  ),
-  (
-    "234",
-    (
-      SELECT
-        id_author
-      FROM
-        Author
-      WHERE
-        name = 'Jane Smith'
-    ),
-    (
-      SELECT
-        id_type
-      FROM
-        Type
-      WHERE
-        label = 'Music Type 2'
-    ),
-    'Sample Music 2',
-    'path_to_music_2.mp3',
-    now(),
-    now(),
-    true
-  );
+-- Dữ liệu cho bảng Music
+INSERT INTO Music (id_music, id_author, id_type, title, music_path, last_updated, created_at) VALUES
+('m1', 'a1', 't1', 'Symphony No.5', 'https://example.com/music/symphony_no_5.mp3', NOW(), NOW()),
+('m2', 'a2', 't2', 'Inception Theme', 'https://example.com/music/inception_theme.mp3', NOW(), NOW()),
+('m3', 'a3', 't3', 'The Good, The Bad and The Ugly', 'https://example.com/music/good_bad_ugly.mp3', NOW(), NOW());
 
--- 5. Chèn dữ liệu vào bảng Scenario
-INSERT INTO
-  Scenario (
-    id_scenario,
-    name,
-    img_path,
-    set_free,
-    last_updated,
-    created_at,
-    is_show
-  )
-VALUES
-  (
-    uuid(),
-    'Sample Scenario 1',
-    'path_to_image_1.png',
-    false,
-    now(),
-    now(),
-    true
-  ),
-  (
-    uuid(),
-    'Sample Scenario 2',
-    'path_to_image_2.png',
-    true,
-    now(),
-    now(),
-    true
-  );
+-- Dữ liệu cho bảng Scenario
+INSERT INTO Scenario (id_scenario, name, img_path, set_free, free_time_start, free_time_end, type, is_default, last_updated, created_at, is_show) VALUES
+('s1', 'Morning', 'https://example.com/scenarios/morning.jpg', '1', '2024-08-20 06:00:00', '2024-10-20 09:00:00', 'day', '1', NOW(), NOW(), '1'),
+('s2', 'Rainy Night', 'https://example.com/scenarios/rainy_night.jpg', '0', '2024-08-20 20:00:00', '2024-10-21 00:00:00', 'night', '0', NOW(), NOW(), '1');
 
--- 6. Chèn dữ liệu vào bảng Sound
-INSERT INTO
-  Sound (
-    id_sound,
-    id_type,
-    sound_path,
-    thumbnail,
-    title,
-    last_updated,
-    created_at
-  )
-VALUES
-  (
-    uuid(),
-    (
-      SELECT
-        id_type
-      FROM
-        Type
-      WHERE
-        label = 'Music Type 1'
-    ),
-    'path_to_sound_1.mp3',
-    'thumbnail_sound_1.png',
-    'Sound 1',
-    now(),
-    now()
-  ),
-  (
-    uuid(),
-    (
-      SELECT
-        id_type
-      FROM
-        Type
-      WHERE
-        label = 'Music Type 2'
-    ),
-    'path_to_sound_2.mp3',
-    'thumbnail_sound_2.png',
-    'Sound 2',
-    now(),
-    now()
-  );
+-- Dữ liệu cho bảng Sound
+INSERT INTO Sound (id_sound, id_type, sound_path, thumbnail, title, last_updated, created_at) VALUES
+('s1', 't1', 'https://example.com/sounds/classical_piano.mp3', 'https://example.com/thumbnails/classical_piano.jpg', 'Classical Piano', NOW(), NOW()),
+('s2', 't2', 'https://example.com/sounds/ambient_rain.mp3', 'https://example.com/thumbnails/ambient_rain.jpg', 'Ambient Rain', NOW(), NOW());
 
--- 7. Chèn dữ liệu vào bảng PeriodMembership
--- Lưu ý: id_user phải khớp với giá trị đã được chèn vào bảng User trước đó
-INSERT INTO
-  PeriodMembership (
-    id_membership,
-    id_user,
-    created_date,
-    last_updated,
-    start,
-  end,
-  price,
-  payment_method,
-  is_paid
-)
-VALUES
-  (
-    uuid(),
-    (
-      SELECT
-        id_user
-      FROM
-        User
-      WHERE
-        first_name = 'Alice'
-    ),
-    now(),
-    now(),
-    now(),
-    DATE_ADD(now(), INTERVAL 1 YEAR),
-    99.99,
-    'credit_card',
-    true
-  ),
-  (
-    uuid(),
-    (
-      SELECT
-        id_user
-      FROM
-        User
-      WHERE
-        first_name = 'Bob'
-    ),
-    now(),
-    now(),
-    now(),
-    DATE_ADD(now(), INTERVAL 6 MONTH),
-    49.99,
-    'paypal',
-    false
-  );
+-- Dữ liệu cho bảng PeriodMembership
+INSERT INTO PeriodMembership (id_membership, id_user, created_date, last_updated, start, end, price, payment_method, is_paid) VALUES
+('pm1', 'u1', NOW(), NOW(), '2024-08-20 00:00:00', '2025-08-20 23:59:59', 99.99, 'credit_card', 'paid'),
+('pm2', 'u2', NOW(), NOW(), '2024-08-20 00:00:00', '2025-08-20 23:59:59', 149.99, 'paypal', 'processing');
 
--- 8. Chèn dữ liệu vào bảng Template
--- Lưu ý: id_user, id_scenario và id_music phải khớp với các giá trị đã được chèn vào các bảng User, Scenario và Music trước đó
-INSERT INTO
-  Template (
-    id_template,
-    id_user,
-    id_scenario,
-    id_music,
-    last_updated
-  )
-VALUES
-  (
-    uuid(),
-    (
-      SELECT
-        id_user
-      FROM
-        User
-      WHERE
-        first_name = 'Alice'
-    ),
-    (
-      SELECT
-        id_scenario
-      FROM
-        Scenario
-      WHERE
-        name = 'Sample Scenario 1'
-    ),
-    (
-      SELECT
-        id_music
-      FROM
-        Music
-      WHERE
-        title = 'Sample Music 1'
-    ),
-    now()
-  ),
-  (
-    uuid(),
-    (
-      SELECT
-        id_user
-      FROM
-        User
-      WHERE
-        first_name = 'Bob'
-    ),
-    (
-      SELECT
-        id_scenario
-      FROM
-        Scenario
-      WHERE
-        name = 'Sample Scenario 2'
-    ),
-    (
-      SELECT
-        id_music
-      FROM
-        Music
-      WHERE
-        title = 'Sample Music 2'
-    ),
-    now()
-  );
+-- Dữ liệu cho bảng Template
+INSERT INTO Template (id_template, id_user, id_scenario, id_music, last_updated, music_volumn) VALUES
+('t1', 'u1', 's1', 'm1', NOW(), 0.7),
+('t2', 'u2', 's2', 'm2', NOW(), 0.5);
 
--- 9. Chèn dữ liệu vào bảng ScenarioSoundDetail
--- Lưu ý: id_sound và id_scenario phải khớp với các giá trị đã được chèn vào bảng Sound và Scenario trước đó
-INSERT INTO
-  ScenarioSoundDetail (
-    id_concatenation,
-    id_sound,
-    id_scenario,
-    location_x,
-    location_y
-  )
-VALUES
-  (
-    uuid(),
-    (
-      SELECT
-        id_sound
-      FROM
-        Sound
-      WHERE
-        title = 'Sound 1'
-    ),
-    (
-      SELECT
-        id_scenario
-      FROM
-        Scenario
-      WHERE
-        name = 'Sample Scenario 1'
-    ),
-    0.5,
-    0.5
-  ),
-  (
-    uuid(),
-    (
-      SELECT
-        id_sound
-      FROM
-        Sound
-      WHERE
-        title = 'Sound 2'
-    ),
-    (
-      SELECT
-        id_scenario
-      FROM
-        Scenario
-      WHERE
-        name = 'Sample Scenario 2'
-    ),
-    0.75,
-    0.25
-  );
+-- Dữ liệu cho bảng ScenarioSoundDetail
+INSERT INTO ScenarioSoundDetail (id_concatenation, id_sound, id_scenario, location_x, location_y, default_playing, default_volumn) VALUES
+('ssd1', 's1', 's1', 10.0, 20.0, 1, 0.6),
+('ssd2', 's2', 's2', 30.0, 40.0, 0, 0.5),
+('ssd4', 's1', 's2', 10.0, 20.0, 1, 0.6),
+('ssd3', 's2', 's1', 30.0, 40.0, 0, 0.5);
 
--- 10. Chèn dữ liệu vào bảng SoundTemplate
--- Lưu ý: id_sound và id_template phải khớp với các giá trị đã được chèn vào bảng Sound và Template trước đó
-INSERT INTO
-  SoundTemplate (id_sound_template, id_sound, id_template, volumn)
-VALUES
-  (
-    uuid(),
-    (
-      SELECT
-        id_sound
-      FROM
-        Sound
-      WHERE
-        title = 'Sound 1'
-    ),
-    (
-      SELECT
-        id_template
-      FROM
-        Template
-      WHERE
-        id_scenario = (
-          SELECT
-            id_scenario
-          FROM
-            Scenario
-          WHERE
-            name = 'Sample Scenario 1'
-        )
-    ),
-    0.8
-  ),
-  (
-    uuid(),
-    (
-      SELECT
-        id_sound
-      FROM
-        Sound
-      WHERE
-        title = 'Sound 2'
-    ),
-    (
-      SELECT
-        id_template
-      FROM
-        Template
-      WHERE
-        id_scenario = (
-          SELECT
-            id_scenario
-          FROM
-            Scenario
-          WHERE
-            name = 'Sample Scenario 2'
-        )
-    ),
-    0.6
-  );
+-- Dữ liệu cho bảng SoundTemplate
+INSERT INTO SoundTemplate (id_sound_template, id_sound, id_template, volumn) VALUES
+('st1', 's1', 't1', 0.7),
+('st2', 's2', 't2', 0.5);
 
--- 11. Chèn dữ liệu vào bảng ScenarioMusicDetail
--- Lưu ý: id_scenario và id_music phải khớp với các giá trị đã được chèn vào bảng Scenario và Music trước đó
-INSERT INTO
-  ScenarioMusicDetail (id_concatenation, id_scenario, id_music)
-VALUES
-  (
-    uuid(),
-    (
-      SELECT
-        id_scenario
-      FROM
-        Scenario
-      WHERE
-        name = 'Sample Scenario 1'
-    ),
-    (
-      SELECT
-        id_music
-      FROM
-        Music
-      WHERE
-        title = 'Sample Music 1'
-    )
-  ),
-  (
-    uuid(),
-    (
-      SELECT
-        id_scenario
-      FROM
-        Scenario
-      WHERE
-        name = 'Sample Scenario 2'
-    ),
-    (
-      SELECT
-        id_music
-      FROM
-        Music
-      WHERE
-        title = 'Sample Music 2'
-    )
-  );
+-- Dữ liệu cho bảng ScenarioMusicDetail
+INSERT INTO ScenarioMusicDetail (id_concatenation, id_scenario, id_music, is_default, is_show) VALUES
+('smd1', 's1', 'm1', '1', '1'),
+('smd2', 's2', 'm2', '0', '0');
+
 
 ----------------------------------------------------- PROCEDURE
 ------------------------- Delete
@@ -1291,23 +856,23 @@ END //
 DELIMITER ;
 
 -- Insert ScenarioSoundDetail Minimalist
-DELIMITER //
-CREATE OR REPLACE PROCEDURE add_scenario_sound_detail_minimalist(
-    IN p_id_sound VARCHAR(40),
-    IN p_id_scenario VARCHAR(40)
-)
-BEGIN
-    DECLARE id VARCHAR(40);
-    SET id = UUID();
+-- DELIMITER //
+-- CREATE OR REPLACE PROCEDURE add_scenario_sound_detail_minimalist(
+--     IN p_id_sound VARCHAR(40),
+--     IN p_id_scenario VARCHAR(40)
+-- )
+-- BEGIN
+--     DECLARE id VARCHAR(40);
+--     SET id = UUID();
 
-    INSERT INTO ScenarioSoundDetail (id_concatenation, id_sound, id_scenario)
-    VALUES (id, p_id_sound, p_id_scenario);
+--     INSERT INTO ScenarioSoundDetail (id_concatenation, id_sound, id_scenario)
+--     VALUES (id, p_id_sound, p_id_scenario);
 
-    -- Trả về ID của bản ghi vừa thêm
-    SELECT id_concatenation as id, id_sound, id_scenario FROM ScenarioSoundDetail
-    WHERE id_concatenation = id;
-END //
-DELIMITER ;
+--     -- Trả về ID của bản ghi vừa thêm
+--     SELECT id_concatenation as id, id_sound, id_scenario FROM ScenarioSoundDetail
+--     WHERE id_concatenation = id;
+-- END //
+-- DELIMITER ;
 
 
 -- Insert SoundTemplate
@@ -1332,23 +897,23 @@ END //
 DELIMITER ;
 
 -- Insert SoundTemplate Minimalist
-DELIMITER //
-CREATE OR REPLACE PROCEDURE add_sound_template_minimalist(
-    IN p_id_sound VARCHAR(40),
-    IN p_id_template VARCHAR(40)
-)
-BEGIN
-    DECLARE id VARCHAR(40);
-    SET id = UUID();
+-- DELIMITER //
+-- CREATE OR REPLACE PROCEDURE add_sound_template_minimalist(
+--     IN p_id_sound VARCHAR(40),
+--     IN p_id_template VARCHAR(40)
+-- )
+-- BEGIN
+--     DECLARE id VARCHAR(40);
+--     SET id = UUID();
 
-    INSERT INTO SoundTemplate (id_sound_template, id_sound, id_template)
-    VALUES (id, p_id_sound, p_id_template);
+--     INSERT INTO SoundTemplate (id_sound_template, id_sound, id_template)
+--     VALUES (id, p_id_sound, p_id_template);
 
-    -- Trả về ID của bản ghi vừa thêm
-    SELECT id_sound_template as id, id_sound, id_template FROM SoundTemplate
-    WHERE id_sound_template = id;
-END //
-DELIMITER ;
+--     -- Trả về ID của bản ghi vừa thêm
+--     SELECT id_sound_template as id, id_sound, id_template FROM SoundTemplate
+--     WHERE id_sound_template = id;
+-- END //
+-- DELIMITER ;
 
 
 -- Insert ScenarioMusicDetail
@@ -1357,14 +922,15 @@ DELIMITER //
 CREATE OR REPLACE PROCEDURE add_scenario_music_detail(
     IN p_id_scenario VARCHAR(40),
     IN p_id_music VARCHAR(40),
-    IN p_is_default ENUM("0", "1")
+    IN p_is_default ENUM("0", "1"),
+    IN p_is_show ENUM("0", "1")
 )
 BEGIN
     DECLARE id VARCHAR(40);
     SET id = UUID();
 
-    INSERT INTO ScenarioMusicDetail (id_concatenation, id_scenario, id_music, is_default)
-    VALUES (id, p_id_scenario, p_id_music, p_is_default);
+    INSERT INTO ScenarioMusicDetail (id_concatenation, id_scenario, id_music, is_default, is_show)
+    VALUES (id, p_id_scenario, p_id_music, p_is_default, p_is_show);
 
     -- Trả về ID của bản ghi vừa thêm
     SELECT id_concatenation as id, id_scenario, id_music, is_default FROM ScenarioMusicDetail
