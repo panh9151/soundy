@@ -43,43 +43,42 @@ export const GET = async (request: Request, context: any) => {
 
       return objectResponse({ ...musicList[0] });
     } else {
-      // const [musicList]: Array<any> = await connection.query(
-      //   `
-      //     SELECT
-      //         m.id_music AS id,
-      //         m.id_author AS author,
-      //         m.title,
-      //         m.music_path AS path,
-      //         m.last_updated,
-      //         JSON_OBJECT(
-      //             'id', t.id_type,
-      //             'thumbnail', t.thumbnail,
-      //             'label', t.label
-      //         ) AS type,
-      //         JSON_OBJECT(
-      //             'id', a.id_author,
-      //             'name', a.name,
-      //             'thumbnail', a.thumbnail
-      //         ) AS author
-      //     FROM
-      //         Music m
-      //     LEFT JOIN
-      //         Type t ON m.id_type = t.id_type and t.is_show = '1'
-      //     JOIN
-      //         Author a ON m.id_author = a.id_author
-      //     WHERE
-      //         m.id_music = ?;
-      //   `,
-      //   [id]
-      // );
+      let query = `
+      SELECT 
+          m.id_music AS id, 
+          m.id_author AS author, 
+          m.title, 
+          m.music_path AS path, 
+          m.last_updated,
+          JSON_OBJECT(
+              'id', t.id_type,
+              'thumbnail', t.thumbnail,
+              'label', t.label
+          ) AS type,
+          JSON_OBJECT(
+              'id', a.id_author,
+              'name', a.name,
+              'thumbnail', a.thumbnail
+          ) AS author
+      FROM 
+          Music m
+      LEFT JOIN 
+          Type t ON m.id_type = t.id_type
+      JOIN 
+          Author a ON m.id_author = a.id_author
+      WHERE 
+          m.id_music = ? 
+          and m.is_show = "1"
+    `;
+      if (currentUser?.role !== "membership") query += " and m.is_free = '1'";
+      const [musicList]: Array<any> = await connection.query(query, [id]);
 
-      // if (!musicList || musicList.length === 0) {
-      //   throwCustomError("ID not found", 400);
-      // }
+      if (!musicList || musicList.length === 0) {
+        throwCustomError("ID not found", 400);
+      }
 
-      // Checker.convertJson(musicList as Array<any>, "author", "type");
-      // return objectResponse({ ...musicList[0] });
-      throwCustomError("Not enough permission", 403);
+      Checker.convertJson(musicList as Array<any>, "author", "type");
+      return objectResponse({ ...musicList[0] });
     }
   } catch (error) {
     return getServerErrorMsg(error);

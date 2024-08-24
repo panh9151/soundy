@@ -23,7 +23,7 @@ class Checker {
     } else {
       if (!email) return true;
       if (!validator.isEmail(email)) {
-        throwCustomError("Invalid email format", 400);
+        throwCustomError("Email invalid form", 400);
       }
     }
     return true;
@@ -83,6 +83,18 @@ class Checker {
     } else {
       if (!num) return true;
       if (!Number.isInteger(num)) {
+        throwCustomError("Invalid integer format", 400);
+      }
+    }
+    return true;
+  }
+
+  static checkNumber(num: any, isRequired = false) {
+    if (isRequired && !num && typeof num !== "number") {
+      throwCustomError("Missing password");
+    } else {
+      if (!num) return true;
+      if (typeof num !== "number") {
         throwCustomError("Invalid number format", 400);
       }
     }
@@ -95,7 +107,7 @@ class Checker {
     } else {
       if (!str) return true;
       if (typeof str !== "string") {
-        throwCustomError("Invalid number format", 400);
+        throwCustomError("Invalid string format", 400);
       }
     }
   }
@@ -107,7 +119,7 @@ class Checker {
     throwCustomError("Object is empty", 400);
   }
 
-  static checkRequired(...list: Array<string>) {
+  static checkRequired(...list: Array<any>) {
     if (
       list.every(
         (value) => value !== null && value !== undefined && value !== ""
@@ -118,7 +130,9 @@ class Checker {
     throwCustomError("Missing required fields", 400);
   }
 
-  static checkIncluded(str: any, arr: Array<any>) {
+  static checkIncluded(str: any, arr: Array<any>, isRequired = false) {
+    if (isRequired === false && !str) return;
+
     if (arr.includes(str)) {
       return true;
     }

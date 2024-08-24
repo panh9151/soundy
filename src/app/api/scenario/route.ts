@@ -4,6 +4,77 @@ import { getCurrentUser } from "@/utils/Get";
 import { getServerErrorMsg, throwCustomError } from "@/utils/Error";
 import { objectResponse } from "@/utils/Response";
 
+type SoundModel = {
+  id_sound: string;
+  locationX: number;
+  locationY: number;
+  defaultPlaying: "0" | "1";
+  defaultVolumn: number;
+};
+
+type MusicModel = {
+  id_music: string;
+  isDefault: "0" | "1";
+  isShow: "0" | "1";
+};
+
+async function processSoundDetails(
+  sounds: SoundModel[],
+  connection: any,
+  addedData: any
+) {
+  try {
+    // Use Promise.all to handle all promises concurrently
+    const results = await Promise.all(
+      sounds.map(async (sound: SoundModel) => {
+        const [result] = await connection.query(
+          `call add_scenario_sound_detail(?, ?, ?, ?, ?, ?)`,
+          [
+            sound.id_sound,
+            addedData.id,
+            sound.locationX,
+            sound.locationY,
+            sound.defaultPlaying,
+            sound.defaultVolumn,
+          ]
+        );
+        return result; // Collect the result
+      })
+    );
+    // Optionally process the results if needed
+    return objectResponse({ a: results });
+  } catch (error) {
+    // Handle errors appropriately
+    console.error("Error processing sound details:", error);
+    throw error; // Re-throw or handle as needed
+  }
+}
+
+async function processMusicDetails(
+  musics: MusicModel[],
+  connection: any,
+  addedData: any
+) {
+  try {
+    // Use Promise.all to handle all promises concurrently
+    await Promise.all(
+      musics.map(async (music: MusicModel) => {
+        await connection.query(`call add_scenario_music_detail(?, ?, ?, ?)`, [
+          addedData.id,
+          music.id_music,
+          music.isDefault,
+          music.isShow,
+        ]);
+      })
+    );
+    // If needed, return something or handle results
+  } catch (error) {
+    // Handle errors appropriately
+    console.error("Error processing music details:", error);
+    throw error; // Re-throw or handle as needed
+  }
+}
+
 export const GET = async (request: Request) => {
   try {
     const currentUser = await getCurrentUser(request, false);
@@ -17,8 +88,7 @@ export const GET = async (request: Request) => {
                 'id', ss.id_sound,
                 'type', JSON_OBJECT(
                     'label', tt.label,
-                    'thumbnail', tt.thumbnail,
-                    'isShow', tt.is_show
+                    'thumbnail', tt.thumbnail
                 ),
                 'path', ss.sound_path,
                 'thumbnail', ss.thumbnail,
@@ -34,17 +104,15 @@ export const GET = async (request: Request) => {
                 'path', sm.music_path,
                 'lastUpdate', sm.last_updated,
                 'createdAt', sm.created_at,
-                'isShow', smd.is_show,
                 'author', JSON_OBJECT(
                     'name', a.name,
                     'thumbnail', a.thumbnail
                 ),
                 'type', JSON_OBJECT(
                     'label', t.label,
-                    'thumbnail', t.thumbnail,
-                    'isShow', t.is_show
+                    'thumbnail', t.thumbnail
                 ),
-                'isDefault', smd.is_default
+                'isDefault', smd.default_playing
             )
             SEPARATOR ','), ']') AS musics
         FROM 
@@ -77,7 +145,6 @@ export const GET = async (request: Request) => {
         s.name,
         s.img_path as path,
         s.type,
-        s.is_default as isDefault,
         s.last_updated as lastUpdated,
         s.created_at as createdAt,
         CONCAT('[', GROUP_CONCAT(
@@ -113,7 +180,7 @@ export const GET = async (request: Request) => {
                     'label', t.label,
                     'thumbnail', t.thumbnail
                 ),
-                'isDefault', smd.is_default
+                'isDefault', smd.default_playing
             )
             SEPARATOR ','), ']') AS musics
         FROM 
@@ -123,9 +190,9 @@ export const GET = async (request: Request) => {
         LEFT JOIN 
             Sound ss ON ss.id_sound = ssd.id_sound
         LEFT JOIN
-            ScenarioMusicDetail smd ON smd.id_scenario = s.id_scenario and smd.is_show = '1'
+            ScenarioMusicDetail smd ON smd.id_scenario = s.id_scenario
         LEFT JOIN
-            Music sm ON sm.id_music = smd.id_music and smd.is_show = '1'
+            Music sm ON sm.id_music = smd.id_music
         LEFT JOIN
             Author a ON a.id_author = sm.id_author
         LEFT JOIN
@@ -148,7 +215,6 @@ export const GET = async (request: Request) => {
         s.name,
         s.img_path as path,
         s.type,
-        s.is_default as isDefault,
         s.last_updated as lastUpdated,
         s.created_at as createdAt,
         CONCAT('[', GROUP_CONCAT(
@@ -184,7 +250,7 @@ export const GET = async (request: Request) => {
                     'label', t.label,
                     'thumbnail', t.thumbnail
                 ),
-                'isDefault', smd.is_default
+                'isDefault', smd.default_playing
             )
             SEPARATOR ','), ']') AS musics
         FROM 
@@ -194,9 +260,9 @@ export const GET = async (request: Request) => {
         LEFT JOIN 
             Sound ss ON ss.id_sound = ssd.id_sound
         LEFT JOIN
-            ScenarioMusicDetail smd ON smd.id_scenario = s.id_scenario and smd.is_show = '1'
+            ScenarioMusicDetail smd ON smd.id_scenario = s.id_scenario
         LEFT JOIN
-            Music sm ON sm.id_music = smd.id_music and smd.is_show = '1'
+            Music sm ON sm.id_music = smd.id_music
         LEFT JOIN
             Author a ON a.id_author = sm.id_author
         LEFT JOIN
@@ -205,7 +271,7 @@ export const GET = async (request: Request) => {
             Type tt ON tt.id_type = ss.id_type
         WHERE  
             s.is_show = '1' 
-            AND s.set_free = '1'
+            AND s.is_free = '1'
             AND NOW() BETWEEN s.free_time_start AND s.free_time_end
         GROUP BY 
             s.id_scenario;`,
@@ -232,6 +298,11 @@ export const POST = async (request: Request) => {
       is_default = "0",
       is_show = "1",
     } = body;
+    const {
+      sounds = [],
+      musics = [],
+    }: { sounds: Array<SoundModel> | []; musics: Array<MusicModel> | [] } =
+      body;
 
     // Check required
     Checker.checkRequired(name, img_path);
@@ -251,6 +322,33 @@ export const POST = async (request: Request) => {
     if (currentUser?.role !== "admin")
       throwCustomError("Not enough permission", 403);
 
+    // Check existing sounds
+    if (sounds.length > 0) {
+      const [result]: Array<any> = await connection.query(
+        `
+          select id_sound from Sound where id_sound = '${sounds
+            .map((s: SoundModel) => s.id_sound)
+            .join("' or id_sound = '")}'
+        `,
+        []
+      );
+
+      if (result.length !== sounds.length)
+        throwCustomError("Sound ID not found", 400);
+    }
+
+    // Check existing musics
+    if (musics.length > 0) {
+      const [result]: Array<any> = await connection.query(
+        `select id_music from Music where id_music = '${musics
+          .map((m: MusicModel) => m.id_music)
+          .join("' or id_music = '")}'`,
+        []
+      );
+      if (result.length !== musics.length)
+        throwCustomError("Music ID not found", 400);
+    }
+
     // Update DB
     const [result]: Array<any> = await connection.query(
       `CALL add_scenario(?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -265,8 +363,11 @@ export const POST = async (request: Request) => {
         is_show,
       ]
     );
-
     const addedData = result[0][0];
+
+    await processSoundDetails(sounds, connection, addedData);
+    await processMusicDetails(musics, connection, addedData);
+
     return objectResponse({ newID: addedData.id });
   } catch (error) {
     return getServerErrorMsg(error);

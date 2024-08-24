@@ -21,33 +21,32 @@ export const POST = async (req: Request) => {
     Checker.checkEmail(email);
     Checker.checkPassword(password);
 
-    // Truy vấn người dùng từ cơ sở dữ liệu dựa trên email
+    // Get user
     let [rows]: Array<any> = await connection.query(
       "SELECT * FROM User WHERE email = ?",
       [email]
     );
-
-    // Check not found
-    if (rows.length !== 1) throwCustomError("Invalid credentials", 404);
-
+    if (rows.length !== 1) throwCustomError("Invalid credentials", 401);
     const user = rows[0];
 
-    // compare password
-    // const hashedPassword = await bcrypt.hash(password, 12);
+    // Check banned user
+    if (user.is_banned === "1") throwCustomError("Not enough permission", 403);
+
+    // Check password
     const match = await bcrypt.compare(password, user.password);
-
-    // Check password situations
     if (match) {
-      // Tạo token JWT
-
       const accessToken = await new SignJWT({ id: user.id_user })
         .setProtectedHeader({ alg: "HS256" })
-        .setExpirationTime("24h")
+        .setExpirationTime("10000h")
+        // .setExpirationTime("24h")
         .sign(secretToken);
 
-      return objectResponse({ accessToken }, 200);
+      return objectResponse(
+        { accessToken: accessToken, message: "Success" },
+        200
+      );
     } else {
-      return objectResponse({ message: "Invalid credentials" }, 400);
+      return objectResponse({ message: "Invalid credentials" }, 401);
     }
   } catch (e: any) {
     return getServerErrorMsg(e);

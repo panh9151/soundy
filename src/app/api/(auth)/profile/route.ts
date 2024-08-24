@@ -1,19 +1,26 @@
 import { getServerErrorMsg, throwCustomError } from "@/utils/Error";
 import { objectResponse } from "@/utils/Response";
 import { getCurrentUser } from "@/utils/Get";
-import Env from "@/utils/Env";
-import { filterObjectKeys } from "@/utils/Object";
+import Parser from "@/utils/Parser";
 import Fields from "@/utils/Fields";
 
 export const GET = async (req: Request) => {
   try {
     // Get current user
-    const user = await getCurrentUser(req);
-    if (user.is_banned === "1" && user.role !== "1")
-      throwCustomError("User not found");
+    const user = await getCurrentUser(req, true);
+    if (user.is_banned === "1" && user.role !== "admin")
+      throwCustomError("Login failed", 403);
+
+    // return objectResponse(user);
 
     return objectResponse(
-      { data: filterObjectKeys(user, Fields.user(user.role) as Array<any>) },
+      {
+        message: "success",
+        user: Parser.filterObjectKeys(
+          user,
+          Fields.user(user.role) as Array<any>
+        ),
+      },
       200
     );
   } catch (e: any) {

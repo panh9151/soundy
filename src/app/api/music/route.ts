@@ -35,37 +35,37 @@ export const GET = async (request: Request) => {
       Checker.convertJson(musicList as Array<any>, "author", "type");
       return objectResponse([...musicList]);
     } else {
-      // const [musicList]: Array<any> = await connection.query(
-      //   `
-      //   SELECT
-      //       m.id_music AS id,
-      //       m.id_author AS author,
-      //       m.title,
-      //       m.music_path AS path,
-      //       m.last_updated,
-      //       JSON_OBJECT(
-      //           'id', t.id_type,
-      //           'thumbnail', t.thumbnail,
-      //           'label', t.label
-      //       ) AS type,
-      //       JSON_OBJECT(
-      //           'id', a.id_author,
-      //           'name', a.name,
-      //           'thumbnail', a.thumbnail
-      //       ) AS author
-      //   FROM
-      //       Music m
-      //   LEFT JOIN
-      //       Type t ON m.id_type = t.id_type and t.is_show = "1"
-      //   LEFT JOIN
-      //       Author a ON m.id_author = a.id_author
-      //   `,
-      //   []
-      // );
+      let query = `
+      SELECT 
+          m.id_music AS id, 
+          m.id_author AS author, 
+          m.title, 
+          m.music_path AS path, 
+          m.last_updated,
+          JSON_OBJECT(
+              'id', t.id_type,
+              'thumbnail', t.thumbnail,
+              'label', t.label
+          ) AS type,
+          JSON_OBJECT(
+              'id', a.id_author,
+              'name', a.name,
+              'thumbnail', a.thumbnail
+          ) AS author
+      FROM 
+          Music m
+      LEFT JOIN 
+          Type t ON m.id_type = t.id_type
+      LEFT JOIN 
+          Author a ON m.id_author = a.id_author
+      WHERE
+          is_show = '1'
+      `;
+      if (currentUser?.role !== "membership") query += " and is_free = '1'";
+      const [musicList]: Array<any> = await connection.query(query, []);
 
-      // Checker.convertJson(musicList as Array<any>, "author", "type");
-      // return objectResponse([...musicList]);
-      throwCustomError("Not enough permission");
+      Checker.convertJson(musicList as Array<any>, "author", "type");
+      return objectResponse([...musicList]);
     }
   } catch (error) {
     return getServerErrorMsg(error);

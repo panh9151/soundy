@@ -10,6 +10,7 @@ class User {
       "gender",
       "age",
       "id_google",
+      "role",
     ];
   }
 
@@ -23,6 +24,7 @@ class User {
       "avatar_path",
       "phone",
       "gender",
+      "role",
       "age",
       "id_google",
       "is_banned",
@@ -34,7 +36,7 @@ class User {
 
 class Fields {
   static user(role: string) {
-    if (role === "user") return User.user();
+    if (role === "user" || role === "membership") return User.user();
     else if (role === "admin") return User.admin();
   }
 }

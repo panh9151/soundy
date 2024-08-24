@@ -23,7 +23,7 @@ export async function middleware(request: Request) {
     try {
       decoded = await jwtVerify(token, secretToken);
     } catch (error) {
-      throwCustomError("Token expired");
+      throwCustomError("Wrong token", 400);
     }
     // return objectResponse("test");
     if (!decoded?.payload) {

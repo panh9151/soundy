@@ -47,11 +47,15 @@ export const getCurrentUser = async (
 ) => {
   const userId = req.headers.get("userId") || "";
 
-  const user = getUserbyId(userId);
+  const user = await getUserbyId(userId);
 
   if (isRequired) {
-    if (!userId) throwCustomError("Auth middleware not handle!", 500);
-    if (typeof user === "string") throwCustomError("Authenticate user failed");
+    if (!userId || user === "User not found")
+      throwCustomError("Token not found", 400);
+    if (user === "Cannot verify authentication")
+      throwCustomError("Login failed", 403);
+    if (typeof user === "string")
+      throwCustomError("Cannot verify authentication", 401);
     return user;
   } else {
     return user;
