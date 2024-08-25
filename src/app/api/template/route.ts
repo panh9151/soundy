@@ -73,8 +73,8 @@ export const GET = async (req: Request) => {
     ]);
 
     Parser.convertJson(template, "music", "scenario", "sounds");
-    return objectResponse({ template });
+    return objectResponse({ data: template[0] });
   } catch (error) {
-    getServerErrorMsg(error);
+    return getServerErrorMsg(error);
   }
 };

@@ -2,7 +2,6 @@ import connection from "@/lib/connection";
 import Checker from "@/utils/Checker";
 import { getServerErrorMsg, throwCustomError } from "@/utils/Error";
 import { getCurrentUser } from "@/utils/Get";
-import Parser from "@/utils/Parser";
 import { objectResponse } from "@/utils/Response";
 
 type SoundModel = {
