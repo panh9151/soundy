@@ -1,0 +1,99 @@
+@keyframes appear {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 100%;
+  }
+}
+
+@keyframes flyIn {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes flyInFromRight {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes flyInFromTop {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes flyOutFromBottom {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes expandWidth {
+  0% {
+    width: 0;
+  }
+
+  100% {
+    width: var(--width-expand);
+  }
+}
+
+@keyframes zoomOut {
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes zoomOutSearchBtn {
+  0% {
+    transform: scale(0) translateY(-50%);
+  }
+
+  100% {
+    transform: scale(1) translateY(-50%);
+  }
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translateY(-10%);
+  }
+
+  100% {
+    transform: translateY(25%);
+  }
+}
+
+@keyframes searchBox {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

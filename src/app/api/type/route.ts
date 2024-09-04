@@ -2,15 +2,23 @@ import connection from "@/lib/connection";
 import Checker from "@/utils/Checker";
 import { getCurrentUser } from "@/utils/Get";
 import { getServerErrorMsg, throwCustomError } from "@/utils/Error";
-import { objectResponse } from "@/utils/Response";
+import { getQueryParams, objectResponse } from "@/utils/Response";
 
 export const GET = async (request: Request) => {
   try {
-    const [typeList]: Array<any> = await connection.query(
-      `SELECT * FROM Type`,
-      []
-    );
-    return objectResponse([...typeList]);
+    const params = getQueryParams(request);
+    const { type }: any = params;
+
+    let query = `SELECT t.* FROM Type t`;
+
+    if (type === "sound")
+      query += " JOIN Sound s ON t.id_type = s.id_type GROUP BY t.label";
+    if (type === "music")
+      query += " JOIN Music m ON t.id_type = m.id_type GROUP BY t.label";
+
+    const [typeList]: Array<any> = await connection.query(query, []);
+
+    return objectResponse({ data: typeList });
   } catch (error) {
     return getServerErrorMsg(error);
   }

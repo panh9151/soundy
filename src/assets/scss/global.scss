@@ -1,0 +1,501 @@
+@font-face {
+  font-family: 'Inter';
+  src: url('../font/Inter-Thin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../font/Inter-ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../font/Inter-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../font/Inter-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../font/Inter-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../font/Inter-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../font/Inter-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../font/Inter-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../font/Inter-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
+
+html {
+  font-size: 62.5%;
+  scroll-behavior: smooth;
+  box-sizing: border-box;
+  background-color: var(--black-color);
+  // height: 2000px;
+}
+
+* {
+  font-family: Inter, Helvetica, sans-serif !important;
+  padding: 0;
+  margin: 0;
+  color: #fff;
+  box-sizing: inherit;
+  line-height: normal !important;
+}
+
+span {
+  display: block;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 0;
+}
+
+.container {
+  --container-width: min(122rem, calc(100% - 4rem));
+  --gap: 3rem;
+  margin: auto;
+  // max-width: 1220px;
+  max-width: var(--container-width);
+  // gap: 3rem
+}
+
+button {
+  outline: unset;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
+a {
+  text-decoration: none;
+}
+
+// Display
+.d-flex {
+  display: flex !important;
+}
+
+.d-inline-flex {
+  display: inline-flex !important;
+}
+
+.d-block {
+  display: block !important;
+}
+
+.d-inline-block {
+  display: inline-block !important;
+}
+
+.d-inline {
+  display: inline !important;
+}
+
+.d-none {
+  display: none !important;
+}
+
+.flex-wrap {
+  flex-wrap: wrap !important;
+}
+
+.flex-nowrap {
+  flex-wrap: nowrap !important;
+}
+
+// Height / Width
+// vh
+$i: 0;
+
+@while ($i <=100) {
+  .w-#{$i}vw {
+    width: #{$i}vw !important;
+  }
+
+  .h-#{$i}vh {
+    height: #{$i}vh !important;
+    min-height: 590px;
+  }
+
+  $i: calc($i + 10);
+}
+
+// %
+.h-10 {
+  height: 10% !important;
+}
+
+.h-20 {
+  height: 20% !important;
+}
+
+.h-30 {
+  height: 30% !important;
+}
+
+.h-40 {
+  height: 40% !important;
+}
+
+.h-50 {
+  height: 50% !important;
+}
+
+.h-60 {
+  height: 60% !important;
+}
+
+.h-70 {
+  height: 70% !important;
+}
+
+.h-80 {
+  height: 80% !important;
+}
+
+.h-90 {
+  height: 90% !important;
+}
+
+.h-100 {
+  height: 100% !important;
+}
+
+.w-10 {
+  width: 10% !important;
+}
+
+.w-20 {
+  width: 20% !important;
+}
+
+.w-30 {
+  width: 30% !important;
+}
+
+.w-40 {
+  width: 40% !important;
+}
+
+.w-50 {
+  width: 50% !important;
+}
+
+.w-60 {
+  width: 60% !important;
+}
+
+.w-70 {
+  width: 70% !important;
+}
+
+.w-80 {
+  width: 80% !important;
+}
+
+.w-90 {
+  width: 90% !important;
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
+// Background
+.bg-primary {
+  background-color: var(--primary-color) !important;
+  transition: background-color 0.5s ease;
+}
+
+.bg-white {
+  background-color: var(--white-color);
+}
+
+// Text
+// Font Size
+$i: 0;
+
+@while ($i <20) {
+  .fs-#{$i} {
+    font-size: #{calc($i / 10)}rem !important;
+  }
+
+  $i: calc($i + 1);
+}
+
+// Font Weight
+$i: 0;
+
+@while ($i <=1000) {
+  .fw-#{$i} {
+    font-weight: #{$i} !important;
+  }
+
+  $i: calc($i + 100);
+}
+
+// Color
+.text-000 {
+  color: #000 !important;
+}
+
+.text-111 {
+  color: #111 !important;
+}
+
+.text-222 {
+  color: #222 !important;
+}
+
+.text-333 {
+  color: #333 !important;
+}
+
+.text-444 {
+  color: #444 !important;
+}
+
+.text-555 {
+  color: #555 !important;
+}
+
+.text-666 {
+  color: #666 !important;
+}
+
+.text-777 {
+  color: #777 !important;
+}
+
+.text-888 {
+  color: #888 !important;
+}
+
+.text-999 {
+  color: #999 !important;
+}
+
+.text-white {
+  color: var(--white-color) !important;
+}
+
+.text-primary {
+  color: var(--primary-color) !important;
+}
+
+.text-secondary {
+  color: var(--secondary-text-color) !important;
+}
+
+.text-justify {
+  text-align: justify;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-left {
+  text-align: left;
+}
+
+// Border Radius
+.br-2 {
+  border-radius: 0.2rem;
+}
+
+.br-4 {
+  border-radius: 0.4rem;
+}
+
+.br-10 {
+  border-radius: 1rem;
+}
+
+.br-tr-none {
+  border-top-right-radius: none;
+}
+
+.br-tl-none {
+  border-top-left-radius: none;
+}
+
+.br-br-none {
+  border-bottom-right-radius: none;
+}
+
+.br-bl-none {
+  border-bottom-left-radius: none;
+}
+
+// Border
+.border-unset {
+  border: unset !important;
+}
+
+// Margin / Padding
+.m-unset {
+  margin: unset !important;
+}
+
+.p-unset {
+  padding: unset !important;
+}
+
+.flex-1 {
+  flex: 1 !important;
+}
+
+.justify-content-between {
+  justify-content: space-between !important;
+}
+
+.justify-content-center {
+  justify-content: center !important;
+}
+
+.justify-content-end {
+  justify-content: end !important;
+}
+
+.justify-content-start {
+  justify-content: start !important;
+}
+
+.justify-content-evenly {
+  justify-content: space-evenly !important;
+}
+
+.justify-content-around {
+  justify-content: space-around !important;
+}
+
+.justify-content-right {
+  justify-content: right !important;
+}
+
+.justify-content-left {
+  justify-content: left !important;
+}
+
+.align-items-center {
+  align-items: center !important;
+}
+
+.align-items-start {
+  align-items: start !important;
+}
+
+.align-items-end {
+  align-items: end !important;
+}
+
+.gap {
+  gap: var(--gap-value);
+}
+
+.gap-10 {
+  gap: 10px;
+}
+
+.gap-20 {
+  gap: 20px;
+}
+
+.flex-column {
+  flex-direction: column !important;
+}
+
+.flex-row {
+  flex-direction: row !important;
+}
+
+$i: 1;
+
+@while ($i <=12) {
+  .col-#{$i} {
+    width: calc(100% * (calc($i / 12)));
+  }
+
+  $i: calc($i + 1);
+}
+
+.position-relative {
+  position: relative;
+}
+
+.position-absolute {
+  position: absolute;
+}
+
+.hidden {
+  opacity: 0;
+
+}
+
+.gap1 {
+  gap: 20px;
+}
+
+.gap2 {
+  gap: 10px;
+}
+
+.gap5 {
+  gap: 5px;
+}
+
+.marginbot {
+  margin-bottom: 100px;
+}
+
+.gap4 {
+  gap: 40px;
+}
+
+.gap3 {
+  margin-bottom: 30px;
+}
+
+.marginbot20 {
+  margin-bottom: 20px;
+}

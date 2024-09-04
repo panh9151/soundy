@@ -26,7 +26,8 @@ CREATE TABLE Author (
 CREATE TABLE Type (
   id_type VARCHAR(40) PRIMARY KEY DEFAULT uuid(),
   label VARCHAR(255) NOT NULL UNIQUE,
-  thumbnail VARCHAR(255)
+  thumbnail VARCHAR(255),
+  _index integer default 0
 );
 
 -- Tạo bảng User
@@ -59,6 +60,7 @@ CREATE TABLE Music (
   music_path VARCHAR(255) NOT NULL,
   is_free enum("0", "1") DEFAULT "1",
   is_show enum("0", "1") DEFAULT "1",
+  _index INTEGER DEFAULT 0, 
   last_updated DATETIME DEFAULT NOW(),
   created_at DATETIME DEFAULT NOW(),
   FOREIGN KEY (id_author) REFERENCES Author(id_author) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -91,6 +93,7 @@ CREATE TABLE Sound (
   is_show enum("0", "1") DEFAULT "1",
   last_updated DATETIME DEFAULT NOW(),
   created_at DATETIME DEFAULT NOW(),
+  _index INTEGER DEFAULT 0, 
   FOREIGN KEY (id_type) REFERENCES Type(id_type) ON DELETE SET NULL ON UPDATE CASCADE 
 );
 
@@ -128,7 +131,6 @@ CREATE TABLE ScenarioSoundDetail (
   id_scenario VARCHAR(40) NOT NULL,
   location_x FLOAT NOT NULL,
   location_y FLOAT NOT NULL,
-  default_playing enum("0", "1") DEFAULT "0",
   default_volumn float DEFAULT 0.5,
   FOREIGN KEY (id_sound) REFERENCES Sound(id_sound) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (id_scenario) REFERENCES Scenario(id_scenario) ON DELETE CASCADE ON UPDATE CASCADE
@@ -149,7 +151,6 @@ CREATE TABLE ScenarioMusicDetail (
   id_concatenation VARCHAR(40) PRIMARY KEY DEFAULT uuid(),
   id_scenario VARCHAR(40) NOT NULL,
   id_music VARCHAR(40) NOT NULL,
-  default_playing enum("0", "1") DEFAULT "0",
   default_volumn float DEFAULT 0.5,
   FOREIGN KEY (id_scenario) REFERENCES Scenario(id_scenario) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (id_music) REFERENCES Music(id_music) ON DELETE CASCADE ON UPDATE CASCADE
@@ -220,15 +221,18 @@ DELIMITER ;
 -- INSERT
 -- Dữ liệu cho bảng Author
 INSERT INTO Author (id_author, name, thumbnail) VALUES
-('a1', 'John Williams', 'https://example.com/thumbnails/john_williams.jpg'),
-('a2', 'Hans Zimmer', 'https://example.com/thumbnails/hans_zimmer.jpg'),
-('a3', 'Ennio Morricone', 'https://example.com/thumbnails/ennio_morricone.jpg');
+('a1', 'John Williams', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1724748092/ctaznenblqlcghxvkwsr.svg'),
+('a2', 'Hans Zimmer', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1724748092/ctaznenblqlcghxvkwsr.svg'),
+('a3', 'Ennio Morricone', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1724748092/ctaznenblqlcghxvkwsr.svg');
 
 -- Dữ liệu cho bảng Type
 INSERT INTO Type (id_type, label, thumbnail) VALUES
-('t1', 'Classical', 'https://example.com/thumbnails/classical.jpg'),
-('t2', 'Ambient', 'https://example.com/thumbnails/ambient.jpg'),
-('t3', 'Jazz', 'https://example.com/thumbnails/jazz.jpg');
+('t1', 'Chill', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1724748092/ctaznenblqlcghxvkwsr.svg'),
+('t2', 'Sleepy', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1724748092/tyamdofuuhurpufqdmlk.svg'),
+('t3', 'Jazzy', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1724748092/kuh1yfj6z98ddf0mf8py.svg'),
+('t4', 'Living', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725111763/soundy_svg/r96ywyqexyosmibx8xib.svg'),
+('t5', 'Weather', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725112122/soundy_svg/dybs8qulxsunmnem1tkr.svg'),
+('t6', 'Animal', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725111763/soundy_svg/lmakmdkbzaijb2o2v6iv.svg');
 
 -- Dữ liệu cho bảng User
 INSERT INTO User (id_user, first_name, last_name, middle_name, role, email, password, avatar_path, phone, gender, age, id_google, is_banned, last_updated, created_date, token_reset, expired_token_reset) VALUES
@@ -239,19 +243,49 @@ INSERT INTO User (id_user, first_name, last_name, middle_name, role, email, pass
 
 -- Dữ liệu cho bảng Music
 INSERT INTO Music (id_music, id_author, id_type, title, music_path, last_updated, created_at, is_show, is_free) VALUES
-('m1', 'a1', 't1', 'Symphony No.5', 'https://example.com/music/symphony_no_5.mp3', NOW(), NOW(), "1", "1"),
-('m2', 'a2', 't2', 'Inception Theme', 'https://example.com/music/inception_theme.mp3', NOW(), NOW(), "1", "1"),
-('m3', 'a3', 't3', 'The Good, The Bad and The Ugly', 'https://example.com/music/good_bad_ugly.mp3', NOW(), NOW(), "0", "0");
+('m1', "a1", 't2', 'Sleepy Song No.1', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725204060/soundy/qgfkrswndgrjdtwl8dka.mp3', NOW(), NOW(), "1", "1"),
+('m2', null, 't2', 'Sleepy Song No.2', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725204058/soundy/aafpi79d3rkayclhcjdv.mp3', NOW(), NOW(), "1", "1"),
+('m3', null, 't2', 'Sleepy Song No.3', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725204051/soundy/p481ggerb6zh8uoecjbx.mp3', NOW(), NOW(), "1", "1"),
+('m4', null, 't2', 'Sleepy Song No.4', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725204051/soundy/bw3kopvwczpbeq7ckfhe.mp3', NOW(), NOW(), "1", "0"),
+('m5', "a2", 't3', 'Jazzy Song no.1', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725204060/soundy/qgfkrswndgrjdtwl8dka.mp3', NOW(), NOW(), "1", "1"),
+('m6', null, 't3', 'Jazzy Song no.2', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725204432/soundy/xvsd1a4yrkqxpbtfmrcy.mp3', NOW(), NOW(), "1", "1"),
+('m7', null, 't3', 'Jazzy Song no.3', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725204442/soundy/ohbftyj43q06odn0ipyg.mp3', NOW(), NOW(), "1", "1"),
+('m8', "a3", 't1', 'Chilling Song no.1', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725204547/soundy/qif0km1gtcvzjjcv8jyq.mp3', NOW(), NOW(), "0", "0"),
+('m9', "a1", 't1', 'Chilling Song no.2', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725204546/soundy/y74dybfjcblgn2nmbcsn.mp3', NOW(), NOW(), "0", "0"),
+('m10', "a1", 't1', 'Chilling Song no.3', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725204546/soundy/y1w8rlxp6gn205yjx2gu.mp3', NOW(), NOW(), "0", "0");
 
 -- Dữ liệu cho bảng Scenario
 INSERT INTO Scenario (id_scenario, name, img_path, is_free, free_time_start, free_time_end, type, last_updated, created_at, is_show) VALUES
-('s1', 'Morning', 'https://example.com/scenarios/morning.jpg', '1', '2024-08-20 06:00:00', '2024-10-20 09:00:00', 'day', NOW(), NOW(), '1'),
-('s2', 'Rainy Night', 'https://example.com/scenarios/rainy_night.jpg', '0', '2024-08-20 20:00:00', '2024-10-21 00:00:00', 'night', NOW(), NOW(), '1');
+('s1', 'Morning', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1724528020/pmf4ghw47tzhbc5kxc4n.mp4', '1', '2024-08-20 06:00:00', '2024-10-20 09:00:00', 'day', NOW(), NOW(), '1'),
+('s2', 'Rainy Night', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1724528021/i5uvqbakus5q4xm3ip11.mp4', '0', '2024-08-20 20:00:00', '2024-10-21 00:00:00', 'night', NOW(), NOW(), '1');
 
 -- Dữ liệu cho bảng Sound
 INSERT INTO Sound (id_sound, id_type, sound_path, thumbnail, title, last_updated, created_at) VALUES
-('s1', 't1', 'https://example.com/sounds/classical_piano.mp3', 'https://example.com/thumbnails/classical_piano.jpg', 'Classical Piano', NOW(), NOW()),
-('s2', 't2', 'https://example.com/sounds/ambient_rain.mp3', 'https://example.com/thumbnails/ambient_rain.jpg', 'Ambient Rain', NOW(), NOW());
+('s1', 't5', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725067225/soundy/n4aleq9jhmeqtu557h98.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725068094/soundy_svg/pp6dovv2xckwjsnh2kfk.svg', 'Light Rain', NOW(), NOW()),
+('s2', 't5', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725067257/soundy/d7fcubikm0xei7aue4on.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725069542/soundy_svg/uknu7sjvaqit1iburxlw.svg', 'Steady Rain', NOW(), NOW()),
+('s3', 't5', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725067297/soundy/mvya0dsr8vwrgxm3upnm.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725069542/soundy_svg/bdqtyzydvu8hjjcbrmyy.svg', 'Heavy Rain', NOW(), NOW()),
+('s4', 't5', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725067331/soundy/qcqsf4b3oxloto0ra2ur.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725068103/soundy_svg/uyrzh0solth9g7nyuhe7.svg', 'Thunder Rain', NOW(), NOW()),
+('s5', 't5', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725067117/soundy/kaddjcbo3n4x06jkhdcb.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725069151/soundy_svg/wltknrrojv0378yguyd9.svg', 'Waterfall', NOW(), NOW()),
+('s6', 't5', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725067056/soundy/crkipk1iodvrkgwunnai.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725068101/soundy_svg/zpqowvxie7gvzkygugrq.svg', 'Stream', NOW(), NOW()),
+('s7', 't5', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725067613/soundy/pk0yyuihipud2drn6xxi.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725069150/soundy_svg/lojm4cb2hleo8myg68yk.svg', 'Water Drop', NOW(), NOW()),
+('s8', 't5', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725066158/soundy/fyuok5ymplhffwmpc38l.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725068103/soundy_svg/idvswtkdxae3tlyxi6z7.svg', 'Lake', NOW(), NOW()),
+('s9', 't6', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725066153/soundy/pr0n1h09vetscaf1e3ds.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725068094/soundy_svg/njko7j4ev8rtzpqxwsds.svg', 'Birdsong', NOW(), NOW()),
+('s10', 't5', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725066154/soundy/etbdqzezqkazvvqzdvc4.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725068102/soundy_svg/tr1oeab2udhhm5j82aog.svg', 'Beach', NOW(), NOW()),
+('s11', 't4', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725066154/soundy/d3cfbxtxkpqaukudmqzf.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725069149/soundy_svg/pz5bddi9mg5p60x4jpsu.svg', 'Wind Chimes', NOW(), NOW()),
+('s12', 't5', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725066154/soundy/ueqpc4u5ezapsgu1ynhc.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725068104/soundy_svg/pdanifdp7hifilcnuyka.svg', 'Wind', NOW(), NOW()),
+('s13', 't4', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725066154/soundy/cachzhyi0kdlfra3hld9.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725068094/soundy_svg/wfxup5ndtd0nve7l0yl6.svg', 'Campfire', NOW(), NOW()),
+('s14', 't4', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725066153/soundy/sgi8ylm68addbmvti1bi.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725069149/soundy_svg/im5cifbfqx54a8rpqtje.svg', 'Construction', NOW(), NOW()),
+('s15', 't4', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725066153/soundy/m7unhumnphxaiwy2byyc.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725068102/soundy_svg/i1uuwcvk4a2sslrire2t.svg', 'People talking', NOW(), NOW()),
+('s16', 't5', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725066155/soundy/bu191vlrgggfetiomtfs.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725069680/soundy_svg/ts8x1uajq5squvetir9c.svg', 'Forest', NOW(), NOW()),
+('s17', 't4', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725066155/soundy/ldu6b1vgh0losny6dm1q.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725068102/soundy_svg/zvsc5uclddu33xc3pga8.svg', 'Window rain', NOW(), NOW()),
+('s18', 't4', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725066152/soundy/vbnr81cyyjr3akytkgik.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725068102/soundy_svg/exbpznpdogqudwgidern.svg', 'Keyboards', NOW(), NOW()),
+('s19', 't6', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725066152/soundy/sngdqek7nua49z0uubyg.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725069149/soundy_svg/owj0iqdlplqpqs3dvzlp.svg', 'Cricket', NOW(), NOW()),
+('s20', 't6', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725066154/soundy/ll6pbpwgjmcr5hzdbbyz.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725069149/soundy_svg/dgbv3r7nzzos0a7atfvd.svg', 'Frog', NOW(), NOW()),
+('s21', 't5', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725067483/soundy/sct8fggrvka6iy3zbwtq.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725069150/soundy_svg/sdvwvz9s5mcb6j62p3c9.svg', 'Thunder', NOW(), NOW()),
+('s22', 't4', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725069968/soundy_svg/op01sa6xmhqmkrw32hiy.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725068103/soundy_svg/ze4fbakddwxaubczvhxs.svg', 'Train', NOW(), NOW()),
+('s23', 't4', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725070173/soundy/sctornst6cduokycq6kd.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725068096/soundy_svg/cy0rbdlecgqkrqvyaagn.svg', 'City Traffic', NOW(), NOW()),
+('s24', 't5', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725069983/soundy_svg/jppvoimw5lodavmthrsr.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725068104/soundy_svg/jxklsmgocymtfp0a4h4t.svg', 'Waves', NOW(), NOW()),
+('s25', 't5', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725069970/soundy_svg/pdum7f7ngmke6azxbzoc.mp3', 'https://res.cloudinary.com/dmiaubxsm/image/upload/v1725068097/soundy_svg/imbzmlud8xaubmr6izwl.svg', 'Rain Forest', NOW(), NOW());
 
 -- Dữ liệu cho bảng PeriodMembership
 INSERT INTO PeriodMembership (id_membership, id_user, created_date, last_updated, start, end, price, payment_method, is_paid) VALUES
@@ -264,21 +298,21 @@ INSERT INTO Template (id_template, id_user, id_scenario, id_music, last_updated,
 ('t2', 'u2', 's2', 'm2', NOW(), 0.5);
 
 -- Dữ liệu cho bảng ScenarioSoundDetail
-INSERT INTO ScenarioSoundDetail (id_concatenation, id_sound, id_scenario, location_x, location_y, default_playing, default_volumn) VALUES
-('ssd1', 's1', 's1', 0.5, 0.5, '1', 0.6),
-('ssd2', 's2', 's2', 0.5, 0.5, '0', 0.5),
-('ssd4', 's1', 's2', 0.5, 0.5, '1', 0.6),
-('ssd3', 's2', 's1', 0.5, 0.5, '0', 0.5);
+INSERT INTO ScenarioSoundDetail (id_concatenation, id_sound, id_scenario, location_x, location_y, default_volumn) VALUES
+('ssd1', 's1', 's1', 10, 10, 0.6),
+('ssd2', 's2', 's2', 20, 20, 0.3),
+('ssd4', 's1', 's2', 30, 30, 0.6),
+('ssd3', 's2', 's1', 50, 50, 0.2);
 
 -- Dữ liệu cho bảng SoundTemplate
 INSERT INTO SoundTemplate (id_sound_template, id_sound, id_template, volumn) VALUES
-('st1', 's1', 't1', 0.7),
-('st2', 's2', 't2', 0.5);
+('st1', 's1', 't1', 0.1),
+('st2', 's2', 't2', 0.2);
 
 -- Dữ liệu cho bảng ScenarioMusicDetail
-INSERT INTO ScenarioMusicDetail (id_concatenation, id_scenario, id_music, default_playing, default_volumn) VALUES
-('smd1', 's1', 'm1', '1', '1'),
-('smd2', 's2', 'm2', '0', '0');
+INSERT INTO ScenarioMusicDetail (id_concatenation, id_scenario, id_music, default_volumn) VALUES
+('smd1', 's1', 'm1', 0.4),
+('smd2', 's2', 'm2', 0.2);
 
 
 ----------------------------------------------------- PROCEDURE
@@ -453,7 +487,7 @@ CREATE OR REPLACE PROCEDURE delete_scenario_sound_detail(
 )
 BEGIN
     -- Lấy thông tin của bản ghi trước khi xóa
-    SELECT id_concatenation as id, id_sound, id_scenario, location_x, location_y, default_playing, default_volumn FROM ScenarioSoundDetail
+    SELECT id_concatenation as id, id_sound, id_scenario, location_x, location_y, default_volumn FROM ScenarioSoundDetail
     WHERE id_concatenation = p_id_concatenation;
 
     -- Xóa bản ghi
@@ -697,15 +731,14 @@ CREATE OR REPLACE PROCEDURE add_scenario_sound_detail(
     IN p_id_scenario VARCHAR(40),
     IN p_location_x FLOAT,
     IN p_location_y FLOAT,
-    IN p_default_playing enum("0", "1"),
     IN p_default_volumn FLOAT
 )
 BEGIN
     DECLARE id VARCHAR(40);
     SET id = UUID();
 
-    INSERT INTO ScenarioSoundDetail (id_concatenation, id_sound, id_scenario, location_x, location_y, default_playing, default_volumn)
-    VALUES (id, p_id_sound, p_id_scenario, p_location_x, p_location_y, p_default_playing, p_default_volumn);
+    INSERT INTO ScenarioSoundDetail (id_concatenation, id_sound, id_scenario, location_x, location_y, default_volumn)
+    VALUES (id, p_id_sound, p_id_scenario, p_location_x, p_location_y, p_default_volumn);
 
     -- Trả về ID của bản ghi vừa thêm
     SELECT id;
@@ -738,15 +771,14 @@ DELIMITER //
 CREATE OR REPLACE PROCEDURE add_scenario_music_detail(
     IN p_id_scenario VARCHAR(40),
     IN p_id_music VARCHAR(40),
-    IN p_default_playing ENUM("0", "1"),
     IN p_default_volumn ENUM("0", "1")
 )
 BEGIN
     DECLARE id VARCHAR(40);
     SET id = UUID();
 
-    INSERT INTO ScenarioMusicDetail (id_concatenation, id_scenario, id_music, default_playing, default_volumn)
-    VALUES (id, p_id_scenario, p_id_music, p_default_playing, p_default_volumn);
+    INSERT INTO ScenarioMusicDetail (id_concatenation, id_scenario, id_music, default_volumn)
+    VALUES (id, p_id_scenario, p_id_music, p_default_volumn);
 
     -- Trả về ID của bản ghi vừa thêm
     SELECT id;

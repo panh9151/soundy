@@ -33,7 +33,7 @@ export const GET = async (request: Request) => {
       );
 
       Checker.convertJson(musicList as Array<any>, "author", "type");
-      return objectResponse([...musicList]);
+      return objectResponse({ data: musicList });
     } else {
       let query = `
       SELECT 
@@ -42,6 +42,7 @@ export const GET = async (request: Request) => {
           m.title, 
           m.music_path AS path, 
           m.last_updated,
+          m._index,
           JSON_OBJECT(
               'id', t.id_type,
               'thumbnail', t.thumbnail,
@@ -65,7 +66,7 @@ export const GET = async (request: Request) => {
       const [musicList]: Array<any> = await connection.query(query, []);
 
       Checker.convertJson(musicList as Array<any>, "author", "type");
-      return objectResponse([...musicList]);
+      return objectResponse({ data: musicList });
     }
   } catch (error) {
     return getServerErrorMsg(error);

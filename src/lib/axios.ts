@@ -27,7 +27,7 @@ axios.interceptors.response.use(
   (response) => {
     // Xử lý dữ liệu phản hồi nếu thành công
     return {
-      data: response.data,
+      result: response.data,
       status: response.status,
     };
   },

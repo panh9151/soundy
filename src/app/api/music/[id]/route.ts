@@ -50,6 +50,7 @@ export const GET = async (request: Request, context: any) => {
           m.title, 
           m.music_path AS path, 
           m.last_updated,
+          m._index,
           JSON_OBJECT(
               'id', t.id_type,
               'thumbnail', t.thumbnail,

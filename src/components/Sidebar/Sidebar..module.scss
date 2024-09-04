@@ -1,0 +1,40 @@
+.sidebar {
+  position: absolute;
+  top: 50%;
+  right: 2rem;
+  // height: 250px;
+  transform: translateY(-50%);
+  background-color: rgba(var(--dark-rgb), 0.8);
+  backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  gap: .8rem;
+  padding: 1.8rem .4rem;
+  border-radius: 1rem;
+
+  .iconWrapper {
+    padding: .6rem;
+    background-color: transparent;
+    border: unset;
+    outline: unset;
+    border-radius: 1rem;
+
+    &__active {
+      path {
+        fill: #ffffff !important
+      }
+    }
+
+    &:hover {
+      opacity: .7;
+    }
+  }
+
+  .sidebarIcon {
+    width: 2rem;
+
+    path {
+      fill: rgba(255, 255, 255, .3)
+    }
+  }
+}
