@@ -2,7 +2,7 @@ import axiosLib from "axios";
 
 // Tạo một axios của axios
 const axios = axiosLib.create({
-  baseURL: "http://localhost:3000/api", // URL gốc của API
+  baseURL: `${window.location.origin}/api`, // URL gốc của API dựa trên tên miền hiện tại
 });
 
 // Thêm một request interceptor để gắn accessToken vào header của mỗi yêu cầu
