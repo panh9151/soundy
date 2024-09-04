@@ -1,8 +1,11 @@
 import axiosLib from "axios";
 
+// const base = "http://localhost:3000";
+const base = "https://vercel.tuananh1.id.vn";
+
 // Tạo một axios của axios
 const axios = axiosLib.create({
-  baseURL: `${window.location.origin}/api`, // URL gốc của API dựa trên tên miền hiện tại
+  baseURL: base + "/api", // URL gốc của API
 });
 
 // Thêm một request interceptor để gắn accessToken vào header của mỗi yêu cầu
