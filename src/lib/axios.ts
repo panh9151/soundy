@@ -1,7 +1,7 @@
 import axiosLib from "axios";
 
-// const base = "http://localhost:3000";
-const base = "https://vercel.tuananh1.id.vn";
+const base = "http://localhost:3000";
+// const base = "https://vercel.tuananh1.id.vn";
 
 // Tạo một axios của axios
 const axios = axiosLib.create({

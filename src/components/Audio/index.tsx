@@ -6,6 +6,7 @@ import classes from "./Audio.module.scss";
 import clsx from "clsx";
 import { AppContext } from "@/app/layout";
 import CustomSlider from "../CustomSlider";
+import YouTube from "react-youtube";
 
 const Audio = () => {
   const audioRefs = useRef<HTMLAudioElement[]>([]);
@@ -173,6 +174,12 @@ const Audio = () => {
       });
   }, [state.soundList]);
 
+  useEffect(() => {
+    audioRefs.current.map((item: any) => {
+      item.load();
+    });
+  }, [state.isReloadSounds]);
+
   return (
     <>
       {(state.currentScenarioSound as any[]).map((sound, index) => {
@@ -201,6 +208,7 @@ const Audio = () => {
                 {sound.isPlay && (
                   <div className={classes.volumnWrapper}>
                     <CustomSlider
+                      width="7rem"
                       value={sound.volumn}
                       onChange={(e: any) =>
                         handleVolumeChange(index, Number(e.target.value))

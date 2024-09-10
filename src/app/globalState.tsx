@@ -10,7 +10,10 @@ export type Action = {
     | "MUSIC_TYPE"
     | "PLAYING_MUSIC"
     | "OTHER_SOUNDS"
-    | "CURRENT_TYPE_INDEX";
+    | "CURRENT_TYPE_INDEX"
+    | "CURRENT_STATE_SCENARIO"
+    | "LOADING_BACKGROUND"
+    | "IS_RELOAD_SOUNDS";
   payload: any;
 };
 
@@ -26,6 +29,9 @@ export const initialState = {
   playingMusic: {},
   otherSounds: [],
   currentTypeIndex: 0,
+  currentStateScenario: { time: "day", weather: "clear" },
+  loadingBackground: false,
+  isReloadSounds: {},
 };
 
 // Reducer
@@ -85,6 +91,21 @@ export const reducer = (state: typeof initialState, action: Action) => {
       return {
         ...state,
         currentTypeIndex: action.payload,
+      };
+    case "CURRENT_STATE_SCENARIO":
+      return {
+        ...state,
+        currentStateScenario: action.payload,
+      };
+    case "LOADING_BACKGROUND":
+      return {
+        ...state,
+        loadingBackground: action.payload,
+      };
+    case "IS_RELOAD_SOUNDS":
+      return {
+        ...state,
+        isReloadSounds: action.payload,
       };
     default:
       return state;

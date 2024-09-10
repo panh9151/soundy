@@ -94,7 +94,9 @@ export const GET = async (request: Request) => {
                 'thumbnail', ss.thumbnail,
                 'title', ss.title,
                 'lastUpdate', ss.last_updated,
-                'createdAt', ss.created_at
+                'createdAt', ss.created_at,
+                'locationX', ssd.location_x,
+                'locationY', ssd.location_y
             )
             SEPARATOR ','), ']') AS sounds,
         CONCAT('[', GROUP_CONCAT(
@@ -111,8 +113,7 @@ export const GET = async (request: Request) => {
                 'type', JSON_OBJECT(
                     'label', t.label,
                     'thumbnail', t.thumbnail
-                ),
-                'isDefault', smd.default_playing
+                )
             )
             SEPARATOR ','), ']') AS musics
         FROM 
@@ -137,16 +138,19 @@ export const GET = async (request: Request) => {
         []
       );
       Checker.convertJson(scenarioList, "sounds", "musics");
-      return objectResponse([...scenarioList]);
+      return objectResponse({ data: scenarioList });
     } else if (currentUser?.role === "membership") {
       const [scenarioList]: Array<any> = await connection.query(
         `SELECT 
         s.id_scenario as id,
         s.name,
         s.img_path as path,
-        s.type,
         s.last_updated as lastUpdated,
         s.created_at as createdAt,
+        s.day_url,
+        s.night_url,
+        s.rain_day_url,
+        s.rain_night_url,
         CONCAT('[', GROUP_CONCAT(
             JSON_OBJECT(
                 'id', ss.id_sound,
@@ -161,7 +165,6 @@ export const GET = async (request: Request) => {
                 'createdAt', ss.created_at,
                 'locationX', ssd.location_x,
                 'locationY', ssd.location_y,
-                'defaultPlaying', ssd.default_playing,
                 'defaultVolumn', ssd.default_volumn
             )
             SEPARATOR ','), ']') AS sounds,
@@ -179,8 +182,7 @@ export const GET = async (request: Request) => {
                 'type', JSON_OBJECT(
                     'label', t.label,
                     'thumbnail', t.thumbnail
-                ),
-                'isDefault', smd.default_playing
+                )
             )
             SEPARATOR ','), ']') AS musics
         FROM 
@@ -207,16 +209,19 @@ export const GET = async (request: Request) => {
         []
       );
       Checker.convertJson(scenarioList, "sounds", "musics");
-      return objectResponse([...scenarioList]);
+      return objectResponse({ data: scenarioList });
     } else {
       const [scenarioList]: Array<any> = await connection.query(
         `SELECT 
         s.id_scenario as id,
         s.name,
         s.img_path as path,
-        s.type,
         s.last_updated as lastUpdated,
         s.created_at as createdAt,
+        s.day_url,
+        s.night_url,
+        s.rain_day_url,
+        s.rain_night_url,
         CONCAT('[', GROUP_CONCAT(
             JSON_OBJECT(
                 'id', ss.id_sound,
@@ -231,7 +236,6 @@ export const GET = async (request: Request) => {
                 'createdAt', ss.created_at,
                 'locationX', ssd.location_x,
                 'locationY', ssd.location_y,
-                'defaultPlaying', ssd.default_playing,
                 'defaultVolumn', ssd.default_volumn
             )
             SEPARATOR ','), ']') AS sounds,
@@ -249,8 +253,7 @@ export const GET = async (request: Request) => {
                 'type', JSON_OBJECT(
                     'label', t.label,
                     'thumbnail', t.thumbnail
-                ),
-                'isDefault', smd.default_playing
+                )
             )
             SEPARATOR ','), ']') AS musics
         FROM 
@@ -278,7 +281,7 @@ export const GET = async (request: Request) => {
         []
       );
       Checker.convertJson(scenarioList as Array<any>, "sounds", "musics");
-      return objectResponse([...scenarioList]);
+      return objectResponse({ data: scenarioList });
     }
   } catch (error) {
     return getServerErrorMsg(error);

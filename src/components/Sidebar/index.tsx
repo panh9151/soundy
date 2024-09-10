@@ -1,7 +1,9 @@
 import classes from "./Sidebar..module.scss";
 import { useState } from "react";
-import SoundSetting from "./SoundSetting";
+import SoundSetting from "../SoundSetting";
 import clsx from "clsx";
+import ScenarioSetting from "../ScenarioSetting";
+import YouTubePiP from "../YoutubePiP";
 
 const Sidebar = () => {
   // const hoverIcon;
@@ -78,7 +80,8 @@ const Sidebar = () => {
         </button>
       </div>
       {sidebarOverlay === "sounds" && <SoundSetting />}
-      {sidebarOverlay === "scenario" && <SoundSetting />}
+      {sidebarOverlay === "scenario" && <ScenarioSetting />}
+      <YouTubePiP active={sidebarOverlay === "youtube"} />
     </>
   );
 };

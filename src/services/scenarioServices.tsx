@@ -4,3 +4,7 @@ import { cache } from "react";
 export const getDefaultItem = cache(() => {
   return axios.get("/scenario/default");
 });
+
+export const getList = cache(() => {
+  return axios.get("/scenario");
+});

@@ -33,6 +33,10 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
     console.log("First rendering");
 
     ScenarioService.getDefaultItem().then((res: any) => {
+      // Set background to loading state
+      // dispatch({ type: "LOADING_BACKGROUND", payload: true });
+
+      // Update default scenario
       dispatch({ type: "CURRENT_SCENARIO", payload: res.result.data });
       dispatch({
         type: "CURRENT_SCENARIO_SOUND",
@@ -60,8 +64,17 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         },
       });
 
+      // dispatch({ type: "LOADING_BACKGROUND", payload: false });
       setLoading((prev: any) => {
         return { ...prev, scenario: false, currentMusic: false };
+      });
+    });
+
+    ScenarioService.getList().then((res: any) => {
+      dispatch({ type: "SCENARIO_LIST", payload: res.result.data });
+
+      setLoading((prev: any) => {
+        return { ...prev, musicType: false };
       });
     });
 

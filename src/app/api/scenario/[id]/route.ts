@@ -80,9 +80,12 @@ export const GET = async (request: Request, context: any) => {
       s.id_scenario as id,
       s.name,
       s.img_path as path,
-      s.type,
       s.last_updated as lastUpdated,
       s.created_at as createdAt,
+      s.day_url,
+      s.night_url,
+      s.rain_day_url,
+      s.rain_night_url,
       CONCAT('[', GROUP_CONCAT(
           JSON_OBJECT(
               'id', ss.id_sound,
@@ -154,9 +157,12 @@ export const GET = async (request: Request, context: any) => {
         s.id_scenario as id,
         s.name,
         s.img_path as path,
-        s.type,
         s.last_updated as lastUpdated,
         s.created_at as createdAt,
+        s.day_url,
+        s.night_url,
+        s.rain_day_url,
+        s.rain_night_url,
         CONCAT('[', GROUP_CONCAT(
             JSON_OBJECT(
                 'id', ss.id_sound,

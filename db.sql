@@ -72,7 +72,10 @@ CREATE TABLE Scenario (
   id_scenario VARCHAR(40) PRIMARY KEY DEFAULT uuid(),
   name VARCHAR(255) NOT NULL,
   img_path VARCHAR(255) NOT NULL,
-  type enum("day", "night", "rain") DEFAULT "day",
+  day_url varchar(255),
+  night_url varchar(255),
+  rain_day_url varchar(255),
+  rain_night_url varchar(255),
   is_free ENUM("0", "1") DEFAULT "1",
   free_time_start DATETIME,
   free_time_end DATETIME,
@@ -255,9 +258,9 @@ INSERT INTO Music (id_music, id_author, id_type, title, music_path, last_updated
 ('m10', "a1", 't1', 'Chilling Song no.3', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725204546/soundy/y1w8rlxp6gn205yjx2gu.mp3', NOW(), NOW(), "0", "0");
 
 -- Dữ liệu cho bảng Scenario
-INSERT INTO Scenario (id_scenario, name, img_path, is_free, free_time_start, free_time_end, type, last_updated, created_at, is_show) VALUES
-('s1', 'Morning', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1724528020/pmf4ghw47tzhbc5kxc4n.mp4', '1', '2024-08-20 06:00:00', '2024-10-20 09:00:00', 'day', NOW(), NOW(), '1'),
-('s2', 'Rainy Night', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1724528021/i5uvqbakus5q4xm3ip11.mp4', '0', '2024-08-20 20:00:00', '2024-10-21 00:00:00', 'night', NOW(), NOW(), '1');
+INSERT INTO Scenario (id_scenario, name, img_path, is_free, free_time_start, free_time_end, last_updated, created_at, is_show, day_url, night_url, rain_day_url, rain_night_url) VALUES
+('s1', 'Christmas Chill Vibes', "https://res.cloudinary.com/dmiaubxsm/image/upload/v1725540268/nptbq71tromurypjgbhr.png", '1', '2024-08-20 06:00:00', '2024-10-20 09:00:00', NOW(), NOW(), '1','https://res.cloudinary.com/dmiaubxsm/video/upload/v1725558059/g2h2rpapunvic0oqjfgv.mp4', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725558055/wx2szxdiikpm9cj0tbwb.mp4', "https://res.cloudinary.com/dmiaubxsm/video/upload/v1725558058/ffbfjecd6ap1aqf8ijlk.mp4", "https://res.cloudinary.com/dmiaubxsm/video/upload/v1725558058/kfxvglgwv5i6hilt1avu.mp4"),
+('s2', 'New York', "https://res.cloudinary.com/dmiaubxsm/image/upload/v1725540268/x0sw0w1nfgxyyxh0ofo3.png", '0', '2024-08-20 20:00:00', '2024-10-21 00:00:00', NOW(), NOW(), '1', 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725558416/xlnnz0ylhu7fjksa414u.mp4', "https://res.cloudinary.com/dmiaubxsm/video/upload/v1725558414/kvauorugcwjqmecwqmvh.mp4", "https://res.cloudinary.com/dmiaubxsm/video/upload/v1725558425/pqrnylh68vr6hjcogaik.mp4", 'https://res.cloudinary.com/dmiaubxsm/video/upload/v1725558422/ivcri4wwfznold0gvztk.mp4');
 
 -- Dữ liệu cho bảng Sound
 INSERT INTO Sound (id_sound, id_type, sound_path, thumbnail, title, last_updated, created_at) VALUES
@@ -300,9 +303,9 @@ INSERT INTO Template (id_template, id_user, id_scenario, id_music, last_updated,
 -- Dữ liệu cho bảng ScenarioSoundDetail
 INSERT INTO ScenarioSoundDetail (id_concatenation, id_sound, id_scenario, location_x, location_y, default_volumn) VALUES
 ('ssd1', 's1', 's1', 10, 10, 0.6),
-('ssd2', 's2', 's2', 20, 20, 0.3),
-('ssd4', 's1', 's2', 30, 30, 0.6),
-('ssd3', 's2', 's1', 50, 50, 0.2);
+('ssd2', 's2', 's1', 50, 50, 0.2),
+('ssd3', 's7', 's2', 25, 25, 0.3),
+('ssd4', 's8', 's2', 75, 75, 0.6);
 
 -- Dữ liệu cho bảng SoundTemplate
 INSERT INTO SoundTemplate (id_sound_template, id_sound, id_template, volumn) VALUES

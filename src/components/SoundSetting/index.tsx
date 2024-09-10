@@ -3,7 +3,7 @@ import { useContext, useState } from "react";
 import clsx from "clsx";
 import { ReactSVG } from "react-svg";
 import { AppContext } from "@/app/layout";
-import CustomSlider from "../../CustomSlider";
+import CustomSlider from "../CustomSlider";
 import allIcon from "../../../assets/images/all.svg";
 import Image from "next/image";
 
@@ -68,25 +68,25 @@ const SoundSetting = ({ sounds }: any) => {
   };
 
   const handleChangeMusicVolumn = (value: number) => {
-    if (value !== 0) {
-      dispatch({
-        type: "PLAYING_MUSIC",
-        payload: {
-          ...state.playingMusic,
-          volumn: value,
-          isPlay: true,
-        },
-      });
-    } else {
-      dispatch({
-        type: "PLAYING_MUSIC",
-        payload: {
-          ...state.playingMusic,
-          volumn: value,
-          isPlay: false,
-        },
-      });
-    }
+    // if (value !== 0) {
+    dispatch({
+      type: "PLAYING_MUSIC",
+      payload: {
+        ...state.playingMusic,
+        volumn: value,
+        isPlay: true,
+      },
+    });
+    // } else {
+    //   dispatch({
+    //     type: "PLAYING_MUSIC",
+    //     payload: {
+    //       ...state.playingMusic,
+    //       volumn: value,
+    //       isPlay: false,
+    //     },
+    //   });
+    // }
   };
 
   const changeTypeHandle = (value: number) => {
@@ -318,11 +318,7 @@ const SoundSetting = ({ sounds }: any) => {
                   />
                 </svg>
                 <CustomSlider
-                  value={
-                    state.playingMusic.isPlay !== true
-                      ? 0
-                      : state.playingMusic.volumn
-                  }
+                  value={state.playingMusic.volumn}
                   thumbColor="var(--primary-color)"
                   onChange={(e: any) =>
                     handleChangeMusicVolumn(Number(e.target.value))
