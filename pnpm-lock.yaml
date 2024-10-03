@@ -85,13 +85,13 @@ importers:
         specifier: ^22.2.0
         version: 22.2.0
       '@types/react':
-        specifier: ^18
+        specifier: ^18.3.3
         version: 18.3.3
       '@types/react-dom':
         specifier: ^18
         version: 18.3.0
       typescript:
-        specifier: ^5
+        specifier: ^5.5.4
         version: 5.5.4
 
 packages:
