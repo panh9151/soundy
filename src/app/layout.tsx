@@ -12,6 +12,11 @@ import React, { createContext, useEffect, useReducer, useState } from "react";
 import { initialState, reducer } from "./globalState";
 import Number from "@/utils/Number";
 import "../assets/scss/index.scss";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { Provider } from "react-redux";
+import store from "@/lib/store/store";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const metaData = {
   title: "Next.js 123",
@@ -33,6 +38,8 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
     console.log("First rendering");
 
     ScenarioService.getDefaultItem().then((res: any) => {
+      console.log("Default: ", res);
+
       // Set background to loading state
       // dispatch({ type: "LOADING_BACKGROUND", payload: true });
 
@@ -40,7 +47,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
       dispatch({ type: "CURRENT_SCENARIO", payload: res.result.data });
       dispatch({
         type: "CURRENT_SCENARIO_SOUND",
-        payload: res.result.data.sounds.map((sound: any) => {
+        payload: res?.result?.data?.sounds.map((sound: any) => {
           return {
             ...sound,
             isPlay: false,
@@ -53,7 +60,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
       // Get music
       const randomIndex = Number.getRandomInRange(
         0,
-        res.result.data.musics.length
+        res?.result?.data?.musics?.length
       );
       dispatch({
         type: "PLAYING_MUSIC",
@@ -178,8 +185,8 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 
     dispatch({
       type: "CURRENT_SCENARIO_SOUND",
-      payload: state.currentScenario.sounds
-        ? state.currentScenario.sounds.map((sound: any) => {
+      payload: state?.currentScenario?.sounds
+        ? state?.currentScenario?.sounds.map((sound: any) => {
             return {
               ...sound,
               isPlay: false,
@@ -196,13 +203,13 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
     // Get music
     const randomIndex = Number.getRandomInRange(
       0,
-      state.currentScenario.musics ? state.currentScenario.musics.length : 0
+      state?.currentScenario?.musics ? state?.currentScenario?.musics.length : 0
     );
     dispatch({
       type: "PLAYING_MUSIC",
-      payload: state.currentScenario.musics
+      payload: state?.currentScenario?.musics
         ? {
-            ...state.currentScenario.musics[randomIndex],
+            ...state?.currentScenario?.musics[randomIndex],
             volumn: 0.5,
             isPlay: false,
           }
@@ -216,29 +223,38 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         <title>Soundy - Lofi & Chill</title>
         <meta name="description" content="Soundy website description" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {/* <link rel="icon" href="../favicon.ico" /> */}
+        <link rel="icon" href="/logo.png" />
       </head>
       <body
       //  onClick={onClickBodyHandle}
       >
-        <AppContext.Provider value={{ state, dispatch }}>
-          <Background />
-          {Object.values(loading).every((value) => value !== true) && (
-            <>
-              <header>
-                <Header />
-              </header>
-              <div>
-                <Sidebar />
-              </div>
-              {/* Layout UI */}
-              <main>{children}</main>
-              <footer>
-                <Footer />
-              </footer>
-            </>
-          )}
-        </AppContext.Provider>
+        <Provider store={store}>
+          <GoogleOAuthProvider
+            clientId={
+              "488853703090-fp0h57m21g7b79dlpq0kssdc9af2kps0.apps.googleusercontent.com"
+            }
+          >
+            <ToastContainer />
+            <AppContext.Provider value={{ state, dispatch }}>
+              <Background />
+              {Object.values(loading).every((value) => value !== true) && (
+                <>
+                  <header>
+                    <Header />
+                  </header>
+                  <div>
+                    <Sidebar />
+                  </div>
+                  {/* Layout UI */}
+                  <main>{children}</main>
+                  <footer>
+                    <Footer />
+                  </footer>
+                </>
+              )}
+            </AppContext.Provider>
+          </GoogleOAuthProvider>
+        </Provider>
       </body>
     </html>
   );

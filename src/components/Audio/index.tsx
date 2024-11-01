@@ -121,7 +121,7 @@ const Audio = () => {
   useEffect(() => {
     console.log("Reload sounds volumn when currentScenarioSound change");
 
-    (state.currentScenarioSound as SoundModel[]).forEach(
+    (state.currentScenarioSound as SoundModel[])?.forEach(
       (sound: SoundModel, soundIndex: number) => {
         if (audioRefs.current[soundIndex]) {
           const volume = sound.volumn;
@@ -182,7 +182,7 @@ const Audio = () => {
 
   return (
     <>
-      {(state.currentScenarioSound as any[]).map((sound, index) => {
+      {(state.currentScenarioSound as any[])?.map((sound, index) => {
         return (
           <div
             key={index}

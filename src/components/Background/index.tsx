@@ -25,10 +25,10 @@ const Background = (): JSX.Element => {
       nightRainRef.current.load();
     }
   }, [
-    state.currentScenario.day_url,
-    state.currentScenario.night_url,
-    state.currentScenario.rain_day_url,
-    state.currentScenario.rain_night_url,
+    state?.currentScenario?.day_url,
+    state?.currentScenario?.night_url,
+    state?.currentScenario?.rain_day_url,
+    state?.currentScenario?.rain_night_url,
   ]);
 
   return (
@@ -38,7 +38,7 @@ const Background = (): JSX.Element => {
       <div className={classes.backgroundContainer}>
         {!state.loadingBackground ? (
           <>
-            {state.currentScenario.day_url && (
+            {state?.currentScenario?.day_url && (
               <video
                 ref={dayRef}
                 preload="auto"
@@ -65,7 +65,7 @@ const Background = (): JSX.Element => {
                 Your browser does not support the video tag.
               </video>
             )}
-            {state.currentScenario.night_url && (
+            {state?.currentScenario?.night_url && (
               <video
                 ref={nightRef}
                 preload="auto"
@@ -92,7 +92,7 @@ const Background = (): JSX.Element => {
                 Your browser does not support the video tag.
               </video>
             )}
-            {state.currentScenario.rain_day_url && (
+            {state?.currentScenario?.rain_day_url && (
               <video
                 ref={dayRainRef}
                 preload="auto"
@@ -119,7 +119,7 @@ const Background = (): JSX.Element => {
                 Your browser does not support the video tag.
               </video>
             )}
-            {state.currentScenario.rain_night_url && (
+            {state?.currentScenario?.rain_night_url && (
               <video
                 ref={nightRainRef}
                 preload="auto"
@@ -134,7 +134,7 @@ const Background = (): JSX.Element => {
                 })}
               >
                 <source
-                  src={clsx(state.currentScenario.rain_night_url)}
+                  src={clsx(state?.currentScenario?.rain_night_url)}
                   type="video/mp4"
                 />
                 <track

@@ -78,6 +78,7 @@ export const GET = async (request: Request) => {
         LIMIT 1;`,
       []
     );
+
     Checker.convertJson(scenarioList as Array<any>, "sounds", "musics");
     return objectResponse({ data: scenarioList[0] });
   } catch (error) {

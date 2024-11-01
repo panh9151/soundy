@@ -38,7 +38,7 @@ export const POST = async (req: Request) => {
     );
 
     const url = headers().get("host") || "";
-    const resetLink = `https://${url}/reset-password/${resetToken}`;
+    const resetLink = `http://${url}/reset-password/${resetToken}`;
 
     // Send email
     await transporter.sendMail({

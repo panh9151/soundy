@@ -64,7 +64,7 @@ export const GET = async (request: Request) => {
           s.title,
           s.last_updated as lastUpdated,
           s.created_at as createdAt,
-          s._index
+          s._index,
           ${Parser.queryObject([
             "'thumbnail', t.thumbnail",
             "'label', t.label",

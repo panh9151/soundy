@@ -13,7 +13,7 @@ export type Action = {
     | "CURRENT_TYPE_INDEX"
     | "CURRENT_STATE_SCENARIO"
     | "LOADING_BACKGROUND"
-    | "IS_RELOAD_SOUNDS";
+    | "IS_RELOAD_SOUNDS"
   payload: any;
 };
 

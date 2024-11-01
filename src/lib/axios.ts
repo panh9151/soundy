@@ -33,10 +33,9 @@ axios.interceptors.response.use(
   },
   (error) => {
     if (error.response) {
-      // Server trả về phản hồi với status không nằm trong khoảng 2xx
-      console.error(`Error Status: ${error.response.status}`);
-      console.error("Error Data:", error.response.data); // Dữ liệu trả về từ server
-      console.error("Error Headers:", error.response.headers);
+      console.error("Failed to fetch!");
+
+      return error.response;
     } else if (error.request) {
       // Yêu cầu đã được gửi nhưng không nhận được phản hồi từ server
       console.error("No Response Received:", error.request);

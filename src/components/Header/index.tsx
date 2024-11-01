@@ -1,3 +1,4 @@
+"use client";
 import { ReactSVG } from "react-svg";
 import classes from "./Header.module.scss";
 import { useContext, useEffect, useState } from "react";
@@ -5,12 +6,14 @@ import SwitchButtonCustom from "../SwitchButtonCustom";
 import { AppContext } from "@/app/layout";
 import clsx from "clsx";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
   const { state, dispatch } = useContext(AppContext);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isExpandMenu, setIsExpandMenu] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -19,6 +22,11 @@ const Header = () => {
 
     return () => clearInterval(timer);
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    router.push("/");
+  };
 
   const handleFullscreen = () => {
     const elem = document.documentElement; // Toàn bộ trang web
@@ -167,9 +175,9 @@ const Header = () => {
 
   return (
     <div className={classes.header}>
-      <div className={classes.logo}>
+      <Link href="/" className={classes.logo}>
         <img src="/logo.gif" alt="" />
-      </div>
+      </Link>
       <div className={classes.rightWrapper}>
         <SwitchButtonCustom
           id="switch-time-btn"
@@ -267,26 +275,29 @@ const Header = () => {
           <ul
             className={clsx(classes.ul, { [classes.ul__expand]: isExpandMenu })}
           >
-            <li className={classes.li}>
+            <li className={classes.li} onClick={() => setIsExpandMenu(false)}>
               <Link href="/admin">Admin</Link>
             </li>
-            <li className={classes.li}>
+            <li className={classes.li} onClick={() => setIsExpandMenu(false)}>
               <Link href="/login">Login</Link>
             </li>
-            <li className={classes.li}>
+            <li className={classes.li} onClick={() => setIsExpandMenu(false)}>
               <Link href="/pricing">Pricing</Link>
             </li>
-            <li className={classes.li}>
+            <li className={classes.li} onClick={() => setIsExpandMenu(false)}>
               <Link href="/how-it-work">How it work</Link>
             </li>
-            <li className={classes.li}>
+            <li className={classes.li} onClick={() => setIsExpandMenu(false)}>
               <Link href="/contact-us">Contact Us</Link>
             </li>
-            <li className={classes.li}>
+            <li className={classes.li} onClick={() => setIsExpandMenu(false)}>
               <Link href="/share-feedback">Share Feedback</Link>
             </li>
-            <li className={classes.li}>
+            <li className={classes.li} onClick={() => setIsExpandMenu(false)}>
               <Link href="/general-setting">General Setting</Link>
+            </li>
+            <li className={classes.li} onClick={() => setIsExpandMenu(false)}>
+              <a onClick={() => handleLogout()}>Logout</a>
             </li>
           </ul>
         </div>

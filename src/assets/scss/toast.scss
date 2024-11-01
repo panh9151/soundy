@@ -1,0 +1,44 @@
+.Toastify__toast-container  {
+    z-index: 100000000000000000000000000000000000 !important;
+
+    .Toastify__toast  {
+        display: flex;
+        align-items: center;
+    }
+
+    .Toastify__close-button {
+        height: 100% ;
+
+        path {
+            fill: #000
+        }
+    }
+    
+    .Toastify__toast--success div {
+        svg {
+            path {
+                fill: var(--toastify-color-progress-success);
+            }
+        }
+    
+        div {
+            color: #333;
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+    }
+
+    .Toastify__toast--error div {
+        svg {
+            path {
+                fill: var(--toastify-color-progress-error);
+            }
+        }
+    
+        div {
+            color: #333;
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+    }
+}
