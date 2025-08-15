@@ -152,7 +152,7 @@ const Register = () => {
               type={clsx({ password: !passwordEye, text: passwordEye })}
               id="resetPassword"
               name="resetPassword"
-              value={formData.resetPassword}
+              value={(formData as any).resetPassword}
               onChange={handleChange}
               autoComplete="off"
               placeholder="Repeat password..."
