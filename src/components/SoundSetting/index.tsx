@@ -175,7 +175,7 @@ const SoundSetting = ({ sounds }: any) => {
                   </div>
                   <div className={classes.iconLabel}>All types</div>
                 </div>
-                {state.soundType.map((type: any, index: number) => {
+                {/* {state.soundType.map((type: any, index: number) => {
                   return (
                     <div
                       key={index}
@@ -191,7 +191,7 @@ const SoundSetting = ({ sounds }: any) => {
                       <div className={classes.iconLabel}>{type.label}</div>
                     </div>
                   );
-                })}
+                })} */}
               </>
             )}
             {typeButton === "music" && (
