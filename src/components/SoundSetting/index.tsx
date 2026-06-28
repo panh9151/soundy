@@ -218,7 +218,7 @@ const SoundSetting = ({ sounds }: any) => {
                   </div>
                   <div className={classes.iconLabel}>All types</div>
                 </div>
-                {state.musicType.map((type: any, index: number) => {
+                {/* {state.musicType.map((type: any, index: number) => {
                   return (
                     <div
                       key={index}
@@ -234,7 +234,7 @@ const SoundSetting = ({ sounds }: any) => {
                       <div className={classes.iconLabel}>{type.label}</div>
                     </div>
                   );
-                })}
+                })} */}
               </>
             )}
           </div>
@@ -384,7 +384,7 @@ const SoundSetting = ({ sounds }: any) => {
               })}
             </div>
           </div>
-          {state.currentTypeIndex === 0 && (
+          {/* {state.currentTypeIndex === 0 && (
             // &&
             //   state.otherSounds &&
             //   state.otherSounds?.length > 0
@@ -436,8 +436,8 @@ const SoundSetting = ({ sounds }: any) => {
                   })}
               </div>
             </div>
-          )}
-          {state.currentTypeIndex !== 0 &&
+          )} */}
+          {/* {state.currentTypeIndex !== 0 &&
             typeof state.currentTypeIndex === "number" && (
               // state.otherSounds &&
               // state.otherSounds?.length > 0 &&
@@ -503,7 +503,7 @@ const SoundSetting = ({ sounds }: any) => {
                     })}
                 </div>
               </div>
-            )}
+            )} */}
         </div>
       )}
       {typeButton === "music" && (

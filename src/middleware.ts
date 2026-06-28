@@ -19,18 +19,18 @@ export async function middleware(request: Request) {
 
   try {
     // Decoded and get ID user
-    let decoded: JWTVerifyResult | null = null;
-    try {
-      decoded = await jwtVerify(token, secretToken);
-    } catch (error) {
-      throwCustomError("Wrong token", 400);
-    }
-    // return objectResponse("test");
-    if (!decoded?.payload) {
-      throwCustomError("Failed to verify token", 500);
-    }
-    const userId: string = (decoded?.payload.id as string) || "";
-    response.headers.set("userId", userId);
+    // let decoded: JWTVerifyResult | null = null;
+    // try {
+    //   decoded = await jwtVerify(token, secretToken);
+    // } catch (error) {
+    //   throwCustomError("Wrong token", 400);
+    // }
+    // // return objectResponse("test");
+    // if (!decoded?.payload) {
+    //   throwCustomError("Failed to verify token", 500);
+    // }
+    // const userId: string = (decoded?.payload.id as string) || "";
+    // response.headers.set("userId", userId);
 
     // GetParams
     // response.headers.set("params", JSON.stringify(getQueryParams(request)));

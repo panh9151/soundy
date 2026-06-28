@@ -8,10 +8,10 @@ class Env {
     process.env.EMAIL_PASSWORD || "hkqqwkjauvefwlqc";
 
   // DB
-  static DB_HOST: string = process.env.DB_HOST || "103.169.35.190";
-  static DB_USER: string = process.env.DB_USER || "tuananh1";
-  static DB_PASSWORD: string = process.env.DB_PASSWORD || "Tuananh123";
-  static DB_NAME: string = process.env.DB_NAME || "Soundy";
+  static DB_HOST: string = process.env.DB_HOST || "103.200.23.68";
+  static DB_USER: string = process.env.DB_USER || "heyanhwo_admin";
+  static DB_PASSWORD: string = process.env.DB_PASSWORD || "@Minhminh123";
+  static DB_NAME: string = process.env.DB_NAME || "heyanhwo_soundy";
 
   // Token
   static get ACCESS_TOKEN_SECRET(): Uint8Array {
